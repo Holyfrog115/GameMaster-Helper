@@ -123,10 +123,12 @@ int Attributes::ValidAttribute(int attribute) const
 {
     if (attribute < 1)
     {
+        std::cout << "Ошибка. Неположительное значение характеристики. Установлено значение 1.";
         return 1;
     }
     else if (attribute > 20)
     {
+        std::cout << "Ошибка. Значение характеристики > 20. Установлено значение 20.";
         return 20;
     }
 

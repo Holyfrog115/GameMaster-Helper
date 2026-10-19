@@ -1,0 +1,34 @@
+---
+BasedOnStyle: LLVM
+Language: Cpp
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+BreakBeforeBraces: Allman
+
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortBlocksOnASingleLine: false
+
+AccessModifierOffset: -4
+
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+
+PointerAlignment: Left
+
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerIndentWidth: 4
+
+SpacesInBracedLists: true
+SpaceInsideEmptyBraces: false
+
+FixNamespaceComments: true
+
+ColumnLimit: 120
+
+SpaceBeforeParens: ControlStatements
+...
