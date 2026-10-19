@@ -1,4 +1,5 @@
 #include "utility.hpp"
+#include <random>
 #include <string>
 
 std::string LowerString(const std::string& str)
@@ -11,4 +12,13 @@ std::string LowerString(const std::string& str)
     }
 
     return loweredString;
+}
+
+int RollD20()
+{
+    static std::random_device rd;
+    static std::mt19937 generator(rd());
+    std::uniform_int_distribution<int> d20(1, 20);
+
+    return d20(generator);
 }
