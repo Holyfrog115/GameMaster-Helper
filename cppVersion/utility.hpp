@@ -1,5 +1,5 @@
 #pragma once
 #include <string>
 
-std::string LowerString(std::string& str);
+std::string LowerString(const std::string& str);
 int RollD20();
