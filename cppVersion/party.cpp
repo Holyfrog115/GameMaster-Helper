@@ -66,3 +66,12 @@ int Party::CalcAvgLevel() const
 
     return totalLevel / m_members.size();
 }
+
+void Party::PrintParty() const
+{
+    std::cout << "Участники группы:\n";
+    for (size_t i = 0; i < m_members.size(); ++i)
+    {
+        std::cout << i + 1 << ". " << m_members[i]->GetName() << "\n";
+    }
+}

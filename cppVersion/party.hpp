@@ -16,4 +16,5 @@ public:
     void AddCharacter(const std::vector<PlayerCharacter*>& characters);
     void RemoveCharacter(size_t index);
     int CalcAvgLevel() const;
+    void PrintParty() const;
 };
