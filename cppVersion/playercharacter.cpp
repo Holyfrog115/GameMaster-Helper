@@ -34,12 +34,12 @@ PlayerCharacter::PlayerCharacter(int str, int dex, int con, int intelligence, in
     }
     m_currentHp = m_maxHp;
 
-    std::cout << "Объект класса персонаж игрока был создан\n";
+    std::cout << "Объект класса Playercharacter был создан (" << m_name << ")\n";
 }
 
 PlayerCharacter::~PlayerCharacter()
 {
-    std::cout << "Объект класса персонаж игрока был удален\n";
+    std::cout << "Объект класса Playercharacter был удален (" << m_name << ")\n";
 }
 
 // Get методы
