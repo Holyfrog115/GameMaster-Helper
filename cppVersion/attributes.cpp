@@ -1,5 +1,6 @@
 #include "attributes.hpp"
 #include "utility.hpp"
+#include <iomanip>
 #include <iostream>
 #include <string>
 
@@ -133,4 +134,15 @@ int Attributes::ValidAttribute(int attribute) const
     }
 
     return attribute;
+}
+
+void Attributes::PrintAttributes() const
+{
+    std::cout << "+-----+-----+-----+-----+-----+-----+\n";
+    std::cout << "| СИЛ | ЛОВ | ТЕЛ | ИНТ | МУД | ХАР |\n";
+    std::cout << "+-----+-----+-----+-----+-----+-----+\n";
+    std::cout << "| " << std::setw(3) << m_strength << " | " << std::setw(3) << m_dexterity << " | " << std::setw(3)
+              << m_constitution << " | " << std::setw(3) << m_intelligence << " | " << std::setw(3) << m_wisdom << " | "
+              << std::setw(3) << m_charisma << " |\n";
+    std::cout << "+-----+-----+-----+-----+-----+-----+\n";
 }

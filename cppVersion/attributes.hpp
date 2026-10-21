@@ -32,4 +32,5 @@ public:
     int CalculateModifier(std::string attribute) const;
     int CalculateCarryingCapacity() const;
     int ValidAttribute(int attribute) const;
+    void PrintAttributes() const;
 };

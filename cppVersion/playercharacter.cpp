@@ -176,3 +176,13 @@ int PlayerCharacter::CalculateCarryingCapacity() const
 {
     return m_attributes.CalculateCarryingCapacity();
 }
+
+void PlayerCharacter::PrintInfo() const
+{
+    std::cout << " - Имя персонажа: " << m_name << "\n";
+    std::cout << " - Уровень: " << m_level << "\n";
+    std::cout << " - Максимальное здоровье: " << m_maxHp << "\n";
+    std::cout << " - Текущее здоровье: " << m_currentHp << "\n";
+    std::cout << " - Характеристики:\n";
+    m_attributes.PrintAttributes();
+}

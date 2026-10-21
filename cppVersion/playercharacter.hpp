@@ -32,4 +32,5 @@ public:
     int RollInitiative() const;
     int CalculateModifier(const std::string& attribute) const;
     int CalculateCarryingCapacity() const;
+    void PrintInfo() const;
 };
