@@ -20,11 +20,23 @@ public:
     int GetLevel() const;
     int GetCurrentHp() const;
     int GetMaxHp() const;
+    int GetStrength() const;
+    int GetDexterity() const;
+    int GetConstitution() const;
+    int GetIntelligence() const;
+    int GetWisdom() const;
+    int GetCharisma() const;
 
     void SetName(const std::string& name);
     void SetLevel(int level);
     void SetCurrentHp(int currentHp);
     void SetMaxHp(int maxHp);
+    void SetStrength(int strength);
+    void SetDexterity(int dexterity);
+    void SetConstitution(int constitution);
+    void SetIntelligence(int intelligence);
+    void SetWisdom(int wisdom);
+    void SetCharisma(int charisma);
 
     void TakeDamage(int damage);
     void Heal(int heal);

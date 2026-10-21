@@ -64,6 +64,36 @@ int PlayerCharacter::GetMaxHp() const
     return m_maxHp;
 }
 
+int PlayerCharacter::GetStrength() const
+{
+    return m_attributes.GetStrength();
+}
+
+int PlayerCharacter::GetDexterity() const
+{
+    return m_attributes.GetDexterity();
+}
+
+int PlayerCharacter::GetConstitution() const
+{
+    return m_attributes.GetConstitution();
+}
+
+int PlayerCharacter::GetIntelligence() const
+{
+    return m_attributes.GetIntelligence();
+}
+
+int PlayerCharacter::GetWisdom() const
+{
+    return m_attributes.GetWisdom();
+}
+
+int PlayerCharacter::GetCharisma() const
+{
+    return m_attributes.GetCharisma();
+}
+
 // Set методы
 
 void PlayerCharacter::SetName(const std::string& name)
@@ -113,6 +143,36 @@ void PlayerCharacter::SetMaxHp(int maxHp)
     {
         m_maxHp = maxHp;
     }
+}
+
+void PlayerCharacter::SetStrength(int strength)
+{
+    m_attributes.SetStrength(strength);
+}
+
+void PlayerCharacter::SetDexterity(int dexterity)
+{
+    m_attributes.SetDexterity(dexterity);
+}
+
+void PlayerCharacter::SetConstitution(int constitution)
+{
+    m_attributes.SetConstitution(constitution);
+}
+
+void PlayerCharacter::SetIntelligence(int intelligence)
+{
+    m_attributes.SetIntelligence(intelligence);
+}
+
+void PlayerCharacter::SetWisdom(int wisdom)
+{
+    m_attributes.SetWisdom(wisdom);
+}
+
+void PlayerCharacter::SetCharisma(int charisma)
+{
+    m_attributes.SetCharisma(charisma);
 }
 
 void PlayerCharacter::TakeDamage(int damage)
