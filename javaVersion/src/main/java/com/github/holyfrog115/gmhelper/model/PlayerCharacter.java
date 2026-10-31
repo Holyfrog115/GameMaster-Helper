@@ -1,6 +1,9 @@
 package com.github.holyfrog115.gmhelper.model;
 import com.github.holyfrog115.gmhelper.utils.DiceUtils;
 
+import java.awt.*;
+import java.util.Objects;
+
 public class PlayerCharacter {
     private String name;
     private int level;
@@ -175,5 +178,14 @@ public class PlayerCharacter {
            - Характеристики:
            %s
            """.formatted(name, level, maxHp, currentHp, attributes);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        PlayerCharacter character = (PlayerCharacter) obj;
+        return Objects.equals(name, character.getName()) && Objects.equals(level, character.getLevel())
+                && Objects.equals(maxHp, character.getMaxHp());
     }
 }
