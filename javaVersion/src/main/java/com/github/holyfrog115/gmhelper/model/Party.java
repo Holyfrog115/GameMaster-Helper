@@ -8,12 +8,14 @@ public class Party {
 
     public Party(PlayerCharacter character) {
         addCharacter(character);
+        System.out.println("Объект класса Party был создан");
     }
 
     public Party(List<PlayerCharacter> characters) {
         for (PlayerCharacter character : characters) {
             addCharacter(character);
         }
+        System.out.println("Объект класса Party был создан");
     }
 
     public void addCharacter(PlayerCharacter character) {
