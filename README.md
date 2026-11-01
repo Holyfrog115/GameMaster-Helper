@@ -20,7 +20,7 @@
 
 ### C++ Версия
 
-`g++ ./cppVersion/*.cpp -o app && ./cppVersion/app`
+`g++ ./cppVersion/*.cpp -o ./cppVersion/app && ./cppVersion/app`
 
 ### Java Версия
 
