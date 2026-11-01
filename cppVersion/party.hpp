@@ -1,19 +1,21 @@
 #pragma once
 #include "playercharacter.hpp"
+#include <memory>
 #include <vector>
 
 class Party
 {
 private:
-    std::vector<PlayerCharacter*> m_members;
+    std::vector<std::shared_ptr<PlayerCharacter>> m_members;
 
 public:
-    Party(PlayerCharacter* character);
-    Party(const std::vector<PlayerCharacter*>& characters);
+    Party();
+    Party(std::shared_ptr<PlayerCharacter> character);
+    Party(const std::vector<std::shared_ptr<PlayerCharacter>>& characters);
     ~Party();
 
-    void AddCharacter(PlayerCharacter* character);
-    void AddCharacter(const std::vector<PlayerCharacter*>& characters);
+    void AddCharacter(std::shared_ptr<PlayerCharacter> character);
+    void AddCharacter(const std::vector<std::shared_ptr<PlayerCharacter>>& characters);
     void RemoveCharacter(size_t index);
     int CalcAvgLevel() const;
     void PrintParty() const;

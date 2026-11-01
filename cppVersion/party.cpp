@@ -4,13 +4,18 @@
 #include <iostream>
 #include <vector>
 
-Party::Party(PlayerCharacter* character)
+Party::Party()
+{
+    std::cout << "Объект класса Party был создан.\n";
+}
+
+Party::Party(std::shared_ptr<PlayerCharacter> character)
 {
     AddCharacter(character);
     std::cout << "Объект класса Party был создан.\n";
 }
 
-Party::Party(const std::vector<PlayerCharacter*>& characters)
+Party::Party(const std::vector<std::shared_ptr<PlayerCharacter>>& characters)
 {
     AddCharacter(characters);
     std::cout << "Объект класса Party был создан.\n";
@@ -21,14 +26,14 @@ Party::~Party()
     std::cout << "Объект класса Party был удален.\n";
 }
 
-void Party::AddCharacter(PlayerCharacter* character)
+void Party::AddCharacter(std::shared_ptr<PlayerCharacter> character)
 {
     m_members.push_back(character);
 }
 
-void Party::AddCharacter(const std::vector<PlayerCharacter*>& characters)
+void Party::AddCharacter(const std::vector<std::shared_ptr<PlayerCharacter>>& characters)
 {
-    for (PlayerCharacter* character : characters)
+    for (std::shared_ptr<PlayerCharacter> character : characters)
     {
         if (std::find(m_members.begin(), m_members.end(), character) == m_members.end())
         {
@@ -59,7 +64,7 @@ int Party::CalcAvgLevel() const
     }
 
     int totalLevel = 0;
-    for (PlayerCharacter* character : m_members)
+    for (std::shared_ptr<PlayerCharacter> character : m_members)
     {
         totalLevel += character->GetLevel();
     }
