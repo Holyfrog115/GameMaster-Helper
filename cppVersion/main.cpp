@@ -90,6 +90,63 @@ int main()
     std::vector<std::unique_ptr<PlayerCharacter>> tavern;
     tavern.push_back(std::make_unique<PlayerCharacter>(14, 10, 16, 8, 8, 18, "Стражник 2", 3, 25));
 
+    // Работа unique_ptr
+    std::cout << "\n--- UNIQUE_PTR ---\n";
+    std::cout << "Объект уничтожается при выходе из блока без вызова delete:\n";
+    {
+        std::unique_ptr<Party> partyTemp = std::make_unique<Party>();
+    }
+    // Передача владения через std::move
+    std::cout << "Передача владения через std::move:\n";
+    std::unique_ptr<Party> partyTemp1 = std::make_unique<Party>();
+    std::cout << "Объект Party в partyTemp1 (partyTemp1 == nullptr: " << std::boolalpha << (partyTemp1 == nullptr)
+              << ")\n";
+    std::unique_ptr<Party> partyTemp2;
+    std::cout << "partyTemp2 == nullptr: " << std::boolalpha << (partyTemp2 == nullptr) << "\n";
+    std::cout << "Передача владения...\n";
+    partyTemp2 = std::move(partyTemp1);
+    std::cout << "partyTemp1 == nullptr: " << std::boolalpha << (partyTemp1 == nullptr) << "\n";
+    std::cout << "partyTemp2 == nullptr: " << std::boolalpha << (partyTemp2 == nullptr) << "\n";
+
+    // Работа shared_ptr
+    std::cout << "\n--- SHARED_PTR ---\n";
+    {
+        std::shared_ptr<Party> partyShared = std::make_shared<Party>();
+        std::cout << "Счетчик владельцев: " << partyShared.use_count() << "\n";
+        {
+            std::shared_ptr<Party> partyShared2 = partyShared;
+            std::cout << "Счетчик владельцев: " << partyShared.use_count() << "\n";
+        }
+        std::cout << "Счетчик владельцев: " << partyShared.use_count() << "\n";
+    }
+
+    // Работа weak_ptr
+    std::cout << "\n--- WEAK_PTR ---\n";
+    std::weak_ptr<PlayerCharacter> party_;
+    {
+        std::shared_ptr<PlayerCharacter> party =
+            std::make_shared<PlayerCharacter>(12, 12, 12, 10, 10, 10, "Богдан Милорад Тихоншвили", 2, 20);
+        party_ = party;
+        if (std::shared_ptr<PlayerCharacter> partyTemp = party_.lock())
+        {
+            std::cout << "Объект находится в памяти:\n";
+            partyTemp->PrintInfo();
+        }
+        else
+        {
+            std::cout << "Объект был удален\n";
+        }
+    }
+    if (std::shared_ptr<PlayerCharacter> partyTemp = party_.lock())
+    {
+        std::cout << "Объект находится в памяти:\n";
+        partyTemp->PrintInfo();
+    }
+    else
+    {
+        std::cout << "Объект был удален\n";
+    }
+
     std::cout << "\n";
 
     return 0;
