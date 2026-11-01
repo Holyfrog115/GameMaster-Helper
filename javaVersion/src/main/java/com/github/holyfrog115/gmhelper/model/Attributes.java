@@ -105,7 +105,6 @@ public class Attributes {
            | СИЛ | ЛОВ | ТЕЛ | ИНТ | МУД | ХАР |
            +-----+-----+-----+-----+-----+-----+
            | %3d | %3d | %3d | %3d | %3d | %3d |
-           +-----+-----+-----+-----+-----+-----+
-           """.formatted(strength, dexterity, constitution, intelligence, wisdom, charisma);
+           +-----+-----+-----+-----+-----+-----+""".formatted(strength, dexterity, constitution, intelligence, wisdom, charisma);
     }
 }

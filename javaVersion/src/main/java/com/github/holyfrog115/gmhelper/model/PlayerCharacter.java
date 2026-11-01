@@ -176,8 +176,7 @@ public class PlayerCharacter {
            - Максимальное здоровье: %d
            - Текущее здоровье: %d
            - Характеристики:
-           %s
-           """.formatted(name, level, maxHp, currentHp, attributes);
+           %s""".formatted(name, level, maxHp, currentHp, attributes);
     }
 
     @Override
