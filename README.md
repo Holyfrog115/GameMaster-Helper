@@ -21,3 +21,7 @@
 ### C++ Версия
 
 `g++ ./cppVersion/*.cpp -o app && ./cppVersion/app`
+
+### Java Версия
+
+`javac -d javaVersion/out $(find javaVersion/src/main/java -name "*.java") && java -cp javaVersion/out com.github.holyfrog115.gmhelper.Main`
