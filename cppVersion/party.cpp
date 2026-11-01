@@ -4,6 +4,11 @@
 #include <iostream>
 #include <vector>
 
+Party::Party()
+{
+    std::cout << "Объект класса Party был создан.\n";
+}
+
 Party::Party(std::shared_ptr<PlayerCharacter> character)
 {
     AddCharacter(character);
