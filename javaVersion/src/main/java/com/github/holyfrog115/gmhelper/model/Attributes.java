@@ -1,6 +1,6 @@
 package com.github.holyfrog115.gmhelper.model;
 
-public class Attributes {
+public class Attributes implements AutoCloseable {
     private int strength;
     private int dexterity;
     private int constitution;
@@ -15,6 +15,12 @@ public class Attributes {
         this.intelligence = validAttribute(intelligence);
         this.wisdom = validAttribute(wisdom);
         this.charisma = validAttribute(charisma);
+        System.out.println("Объект класса Attributes создан");
+    }
+
+    @Override
+    public void close() {
+        System.out.println("Ресурс объекта класса Attributes закрыт");
     }
 
     // get методы

@@ -1,10 +1,9 @@
 package com.github.holyfrog115.gmhelper.model;
 import com.github.holyfrog115.gmhelper.utils.DiceUtils;
 
-import java.awt.*;
 import java.util.Objects;
 
-public class PlayerCharacter {
+public class PlayerCharacter implements AutoCloseable {
     private String name;
     private int level;
     private int currentHp;
@@ -33,6 +32,12 @@ public class PlayerCharacter {
             this.maxHp = maxHp;
         }
         this.currentHp = maxHp;
+        System.out.println("Объект класса PlayerCharacter создан");
+    }
+
+    @Override
+    public void close() {
+        System.out.println("Ресурс объекта класса PlayerCharacter закрыт");
     }
 
     // get методы
