@@ -2,6 +2,7 @@
 #include "party.hpp"
 #include "playercharacter.hpp"
 #include <iostream>
+#include <memory>
 #if defined(_WIN32) || defined(_WIN64)
 #include <Windows.h>
 #endif
@@ -14,18 +15,21 @@ int main()
 #endif
     // Композиция
     std::cout << "--- КОМПОЗИЦИЯ: ---\n";
-    PlayerCharacter character1(10, 10, 10, 14, 12, 15, "Робослав", 5, 65);
-    PlayerCharacter character2(16, 10, 14, 8, 8, 10, "Иван-Джон-Пьер", 6, 105);
-    PlayerCharacter& character2ref = character2;
-    PlayerCharacter character3(8, 8, 8, 15, 15, 12, "Нилбог", 4, 32);
+    std::shared_ptr<PlayerCharacter> character1 =
+        std::make_shared<PlayerCharacter>(10, 10, 10, 14, 12, 15, "Робослав", 5, 65);
+    std::shared_ptr<PlayerCharacter> character2 =
+        std::make_shared<PlayerCharacter>(16, 10, 14, 8, 8, 10, "Иван-Джон-Пьер", 6, 105);
+    std::shared_ptr<PlayerCharacter>& character2ref = character2;
+    std::shared_ptr<PlayerCharacter> character3 =
+        std::make_shared<PlayerCharacter>(8, 8, 8, 15, 15, 12, "Нилбог", 4, 32);
 
     // Вызов методов класса PlayerCharacter, которые используют методы класса Attributes
     std::cout << "Вызов методов класса PlayerCharacter:\n";
-    character1.TakeDamage(1000);
-    character1.Heal(10);
-    character1.PrintInfo();
-    std::cout << "Модификатор силы объекта character2: " << character2ref.CalculateModifier("str") << "\n";
-    std::cout << "Бросок инициативы объекта character3: " << character3.RollInitiative() << "\n";
+    character1->TakeDamage(1000);
+    character1->Heal(10);
+    character1->PrintInfo();
+    std::cout << "Модификатор силы объекта character2: " << character2ref->CalculateModifier("str") << "\n";
+    std::cout << "Бросок инициативы объекта character3: " << character3->RollInitiative() << "\n";
 
     std::cout << "При инициализации объекта класса PlayerCharacter создается объект класса Attributes:\n";
     {
@@ -36,7 +40,7 @@ int main()
     // Агрегация
     std::cout << "\n--- АГРЕГАЦИЯ: ---\n";
     {
-        Party party({&character1, &character2ref, &character3});
+        Party party({character1, character2, character3});
 
         // Вызов методов класса Party, которые используют методы методы класса PlayerCharacter
         std::cout << "Вызов методов класса Party:\n";
@@ -46,20 +50,20 @@ int main()
         party.PrintParty();
         std::cout << "Средний уровень группы: " << party.CalcAvgLevel() << "\n";
     }
-    std::cout << "После удаления объекта Party персонажи все еще доступны. Имя объекта charachter1: "
-              << character1.GetName() << "\n";
+    std::cout << "После удаления объекта Party персонажи все еще доступны. Имя объекта char1: " << character1->GetName()
+              << "\n";
 
     // Примеры работы проверок правил
     std::cout << "\n--- ПРИМЕРЫ РАБОТЫ ПРОВЕРОК ПРАВИЛ ---\n";
     std::cout << "Установление отрицательного значения характеристики:\n";
-    character1.SetCharisma(-1);
+    character1->SetCharisma(-1);
     std::cout << "Установление значения характеристики > 20:\n";
-    character1.SetCharisma(30);
+    character1->SetCharisma(30);
     std::cout << "Попытка повысить уровень выше 20:\n";
-    character1.SetLevel(18);
+    character1->SetLevel(18);
     for (int i = 0; i < 3; ++i)
     {
-        character1.LevelUp();
+        character1->LevelUp();
     }
 
     // Статическая инициализация объекта
@@ -70,12 +74,11 @@ int main()
 
     // Динамическая инициализация объекта
     std::cout << "\n--- ДИНАМИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ОБЪЕКТА ---\n";
-    PlayerCharacter* dynamicCharacter;
+    std::unique_ptr<PlayerCharacter> dynamicCharacter;
     {
-        dynamicCharacter = new PlayerCharacter(10, 10, 10, 10, 10, 10, "Динамическая память", 10, 10);
+        dynamicCharacter = std::make_unique<PlayerCharacter>(10, 10, 10, 10, 10, 10, "Динамическая память", 10, 10);
     }
     std::cout << "Имя: " << dynamicCharacter->GetName() << "\n";
-    delete dynamicCharacter;
 
     // Тест массивов
     std::cout << "\n--- ТЕСТ МАССИВОВ ---\n";
@@ -84,9 +87,8 @@ int main()
     army.push_back(PlayerCharacter(12, 12, 12, 10, 10, 10, "Стражник 1", 2, 20));
 
     // 2. Массив динамических объектов
-    std::vector<PlayerCharacter*> tavern;
-    tavern.push_back(new PlayerCharacter(14, 10, 16, 8, 8, 18, "Стражник 2", 3, 25));
-    delete tavern[0];
+    std::vector<std::unique_ptr<PlayerCharacter>> tavern;
+    tavern.push_back(std::make_unique<PlayerCharacter>(14, 10, 16, 8, 8, 18, "Стражник 2", 3, 25));
 
     std::cout << "\n";
 
