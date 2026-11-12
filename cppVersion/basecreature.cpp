@@ -48,21 +48,6 @@ BaseCreature::BaseCreature(BaseCreature&& other) noexcept
     std::cout << "BaseCreature(BaseCreature&& other) -> объект перемещен\n";
 }
 
-BaseCreature& BaseCreature::operator=(const BaseCreature& other)
-{
-    if (this == &other)
-    {
-        return *this;
-    }
-
-    m_name       = other.GetName();
-    m_maxHp      = other.GetMaxHp();
-    m_currentHp  = other.GetCurrentHp();
-    m_attributes = other.m_attributes;
-
-    return *this;
-}
-
 BaseCreature::~BaseCreature()
 {
     --s_creatureCount;

@@ -15,7 +15,7 @@ protected:
     std::shared_ptr<Attributes> m_attributes;
     BaseCreature(const BaseCreature& other);
     BaseCreature(BaseCreature&& other) noexcept;
-    BaseCreature& operator=(const BaseCreature& other);
+    BaseCreature& operator=(const BaseCreature& other)     = default;
     BaseCreature& operator=(BaseCreature&& other) noexcept = default;
 
 public:
