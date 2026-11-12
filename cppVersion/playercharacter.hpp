@@ -16,6 +16,10 @@ public:
     PlayerCharacter(int str, int dex, int con, int intelligence, int wis, int cha, const std::string& name, int level,
                     int maxHp, const std::string& characterClass);
     PlayerCharacter();
+    PlayerCharacter(const PlayerCharacter& other);
+    PlayerCharacter(PlayerCharacter&& other) noexcept = default;
+    PlayerCharacter& operator=(const PlayerCharacter& other);
+    PlayerCharacter& operator=(PlayerCharacter&& other) noexcept = default;
     ~PlayerCharacter() override;
 
     int GetLevel() const

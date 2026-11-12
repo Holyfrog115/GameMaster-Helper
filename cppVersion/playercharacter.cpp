@@ -2,6 +2,7 @@
 #include "attributes.hpp"
 #include "utility.hpp"
 #include <iostream>
+#include <memory>
 #include <string>
 
 PlayerCharacter::PlayerCharacter(int str, int dex, int con, int intelligence, int wis, int cha, const std::string& name,
@@ -30,6 +31,36 @@ PlayerCharacter::PlayerCharacter(int str, int dex, int con, int intelligence, in
 PlayerCharacter::PlayerCharacter()
     : PlayerCharacter(10, 10, 10, 10, 10, 10, "", 1, 1, "")
 {
+}
+
+PlayerCharacter::PlayerCharacter(const PlayerCharacter& other)
+    : BaseCreature(other)
+{
+    m_attributes             = std::make_shared<Attributes>(*other.m_attributes);
+    m_class                  = other.m_class;
+    m_successfulSavingThrows = other.m_successfulSavingThrows;
+    m_failedSavingThrows     = other.m_failedSavingThrows;
+    m_isDead                 = other.m_isDead;
+    m_level                  = other.m_level;
+    std::cout << "PlayerCharacter(const PlayerCharacter& other) -> объект скопирован\n";
+}
+
+PlayerCharacter& PlayerCharacter::operator=(const PlayerCharacter& other)
+{
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    BaseCreature::operator=(other);
+    m_attributes             = std::make_shared<Attributes>(*other.m_attributes);
+    m_class                  = other.m_class;
+    m_successfulSavingThrows = other.m_successfulSavingThrows;
+    m_failedSavingThrows     = other.m_failedSavingThrows;
+    m_isDead                 = other.m_isDead;
+    m_level                  = other.m_level;
+
+    return *this;
 }
 
 PlayerCharacter::~PlayerCharacter()
