@@ -14,6 +14,10 @@ public:
     EnemyCreature(int str, int dex, int con, int intelligence, int wis, int cha, const std::string& name, int maxHp,
                   double challengeRating, int xpReward, const std::string& type);
     EnemyCreature();
+    EnemyCreature(const EnemyCreature& other)                = default;
+    EnemyCreature(EnemyCreature&& other) noexcept            = default;
+    EnemyCreature& operator=(const EnemyCreature& other)     = default;
+    EnemyCreature& operator=(EnemyCreature&& other) noexcept = default;
     ~EnemyCreature() override;
 
     double GetChallengeRating() const
