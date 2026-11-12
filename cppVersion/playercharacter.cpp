@@ -118,7 +118,7 @@ void PlayerCharacter::TakeTurn()
         else
         {
             m_failedSavingThrows++;
-            std::cout << "Проавльный спасбросок. (" << m_failedSavingThrows << " из 3)\n";
+            std::cout << "Провальный спасбросок. (" << m_failedSavingThrows << " из 3)\n";
         }
         if (m_successfulSavingThrows == 3)
         {
