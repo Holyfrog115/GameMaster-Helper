@@ -31,6 +31,11 @@ EnemyCreature::EnemyCreature(int str, int dex, int con, int intelligence, int wi
     std::cout << "EnemyCreature() -> Объект создан\n";
 }
 
+EnemyCreature::EnemyCreature()
+    : EnemyCreature(10, 10, 10, 10, 10, 10, "", 1, 0, 0, "")
+{
+}
+
 EnemyCreature::~EnemyCreature()
 {
     std::cout << "~EnemyCreature() -> Объект уничтожен.\n";

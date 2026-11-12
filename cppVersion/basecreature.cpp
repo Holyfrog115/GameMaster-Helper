@@ -23,6 +23,11 @@ BaseCreature::BaseCreature(const std::string& name, int maxHp, int strength, int
     std::cout << "BaseCreature() -> Объект создан\n";
 }
 
+BaseCreature::BaseCreature()
+    : BaseCreature{"", 1, 10, 10, 10, 10, 10, 10}
+{
+}
+
 BaseCreature::~BaseCreature()
 {
     --s_creatureCount;

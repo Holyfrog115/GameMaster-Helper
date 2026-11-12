@@ -17,6 +17,7 @@ protected:
 public:
     BaseCreature(const std::string& name, int maxHp, int strength, int dexterity, int constitution, int intelligence,
                  int wisdom, int charisma);
+    BaseCreature();
     virtual ~BaseCreature();
 
     std::string GetName() const

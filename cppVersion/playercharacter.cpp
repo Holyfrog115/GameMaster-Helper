@@ -27,6 +27,11 @@ PlayerCharacter::PlayerCharacter(int str, int dex, int con, int intelligence, in
     std::cout << "PlayerCharacter() -> Объект создан (" << GetName() << ")\n";
 }
 
+PlayerCharacter::PlayerCharacter()
+    : PlayerCharacter(10, 10, 10, 10, 10, 10, "", 1, 1, "")
+{
+}
+
 PlayerCharacter::~PlayerCharacter()
 {
     std::cout << "~PlayerCharacter() -> Объект уничтожен (" << GetName() << ")\n";
