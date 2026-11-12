@@ -5,9 +5,9 @@
 #include <string>
 
 PlayerCharacter::PlayerCharacter(int str, int dex, int con, int intelligence, int wis, int cha, const std::string& name,
-                                 int level, int maxHp)
-    : m_attributes(str, dex, con, intelligence, wis, cha)
-    , m_name(name)
+                                 int level, int maxHp, const std::string& characterClass)
+    : BaseCreature{name, maxHp, str, dex, con, intelligence, wis, cha}
+    , m_class{characterClass}
 {
     if (level < 1)
     {
@@ -23,190 +23,13 @@ PlayerCharacter::PlayerCharacter(int str, int dex, int con, int intelligence, in
     {
         m_level = level;
     }
-    if (maxHp < 1)
-    {
-        std::cout << "Ошибка. Неположительное значение максимального здоровья. Установлено значение - 1\n";
-        m_maxHp = 1;
-    }
-    else
-    {
-        m_maxHp = maxHp;
-    }
-    m_currentHp = m_maxHp;
 
-    std::cout << "Объект класса Playercharacter был создан (" << m_name << ")\n";
+    std::cout << "PlayerCharacter() -> Объект создан (" << GetName() << ")\n";
 }
 
 PlayerCharacter::~PlayerCharacter()
 {
-    std::cout << "Объект класса Playercharacter был удален (" << m_name << ")\n";
-}
-
-// Get методы
-
-std::string PlayerCharacter::GetName() const
-{
-    return m_name;
-}
-
-int PlayerCharacter::GetLevel() const
-{
-    return m_level;
-}
-
-int PlayerCharacter::GetCurrentHp() const
-{
-    return m_currentHp;
-}
-
-int PlayerCharacter::GetMaxHp() const
-{
-    return m_maxHp;
-}
-
-int PlayerCharacter::GetStrength() const
-{
-    return m_attributes.GetStrength();
-}
-
-int PlayerCharacter::GetDexterity() const
-{
-    return m_attributes.GetDexterity();
-}
-
-int PlayerCharacter::GetConstitution() const
-{
-    return m_attributes.GetConstitution();
-}
-
-int PlayerCharacter::GetIntelligence() const
-{
-    return m_attributes.GetIntelligence();
-}
-
-int PlayerCharacter::GetWisdom() const
-{
-    return m_attributes.GetWisdom();
-}
-
-int PlayerCharacter::GetCharisma() const
-{
-    return m_attributes.GetCharisma();
-}
-
-// Set методы
-
-void PlayerCharacter::SetName(const std::string& name)
-{
-    m_name = name;
-}
-
-void PlayerCharacter::SetLevel(int level)
-{
-    if (level < 1)
-    {
-        std::cout << "Ошибка. Неположительный уровень персонажа.\n";
-    }
-    else if (level > 20)
-    {
-        std::cout << "Ошибка. Уровень персонажа > 20.\n";
-    }
-    else
-    {
-        m_level = level;
-    }
-}
-
-void PlayerCharacter::SetCurrentHp(int currentHp)
-{
-    if (currentHp < 0)
-    {
-        std::cout << "Ошибка. Текущее здоровье не может быть отрицательным.\n";
-    }
-    else if (currentHp > m_maxHp)
-    {
-        std::cout << "Ошибка. Текущее здоровье не может быть больше максимального.\n";
-    }
-    else
-    {
-        m_currentHp = currentHp;
-    }
-}
-
-void PlayerCharacter::SetMaxHp(int maxHp)
-{
-    if (maxHp < 1)
-    {
-        std::cout << "Ошибка. Неположительное значение максимального здоровья.\n";
-    }
-    else
-    {
-        m_maxHp = maxHp;
-    }
-}
-
-void PlayerCharacter::SetStrength(int strength)
-{
-    m_attributes.SetStrength(strength);
-}
-
-void PlayerCharacter::SetDexterity(int dexterity)
-{
-    m_attributes.SetDexterity(dexterity);
-}
-
-void PlayerCharacter::SetConstitution(int constitution)
-{
-    m_attributes.SetConstitution(constitution);
-}
-
-void PlayerCharacter::SetIntelligence(int intelligence)
-{
-    m_attributes.SetIntelligence(intelligence);
-}
-
-void PlayerCharacter::SetWisdom(int wisdom)
-{
-    m_attributes.SetWisdom(wisdom);
-}
-
-void PlayerCharacter::SetCharisma(int charisma)
-{
-    m_attributes.SetCharisma(charisma);
-}
-
-void PlayerCharacter::TakeDamage(int damage)
-{
-    if (damage < 0)
-    {
-        std::cout << "Ошибка. Значение урона должно быть положительным.\n";
-        return;
-    }
-    if (m_currentHp - damage < 0)
-    {
-        m_currentHp = 0;
-    }
-    else
-    {
-        m_currentHp -= damage;
-    }
-}
-
-void PlayerCharacter::Heal(int heal)
-{
-    if (heal < 0)
-    {
-        std::cout << "Ошибка. Значение исцеления должно быть положительным.\n";
-        return;
-    }
-    if (m_currentHp + heal > m_maxHp)
-    {
-        m_currentHp = m_maxHp;
-    }
-    else
-    {
-        m_currentHp += heal;
-    }
+    std::cout << "~PlayerCharacter() -> Объект уничтожен (" << GetName() << ")\n";
 }
 
 void PlayerCharacter::LevelUp()
@@ -222,27 +45,59 @@ void PlayerCharacter::LevelUp()
     }
 }
 
-int PlayerCharacter::RollInitiative() const
-{
-    return RollD20() + CalculateModifier("dex");
-}
-
-int PlayerCharacter::CalculateModifier(const std::string& attribute) const
-{
-    return m_attributes.CalculateModifier(attribute);
-}
-
 int PlayerCharacter::CalculateCarryingCapacity() const
 {
-    return m_attributes.CalculateCarryingCapacity();
+    return m_attributes->CalculateCarryingCapacity();
 }
 
 void PlayerCharacter::PrintInfo() const
 {
-    std::cout << " - Имя персонажа: " << m_name << "\n";
+    std::cout << " - Имя персонажа: " << GetName() << "\n";
+    std::cout << " - Класс: " << m_class << "\n";
     std::cout << " - Уровень: " << m_level << "\n";
-    std::cout << " - Максимальное здоровье: " << m_maxHp << "\n";
-    std::cout << " - Текущее здоровье: " << m_currentHp << "\n";
+    std::cout << " - Максимальное здоровье: " << GetMaxHp() << "\n";
+    std::cout << " - Текущее здоровье: " << GetCurrentHp() << "\n";
     std::cout << " - Характеристики:\n";
-    m_attributes.PrintAttributes();
+    m_attributes->PrintAttributes();
+}
+
+void PlayerCharacter::TakeTurn()
+{
+    if (m_isDead)
+    {
+        return;
+    }
+    if (GetCurrentHp() == 0)
+    {
+        if (RollD20() >= 10)
+        {
+            m_successfulSavingThrows++;
+            std::cout << "Успешный спасбросок. (" << m_successfulSavingThrows << " из 3)\n";
+        }
+        else
+        {
+            m_failedSavingThrows++;
+            std::cout << "Проавльный спасбросок. (" << m_failedSavingThrows << " из 3)\n";
+        }
+        if (m_successfulSavingThrows == 3)
+        {
+            std::cout << GetName() << " стабилизировался и восстанавливает 1 HP\n";
+            SetCurrentHp(1);
+            return;
+        }
+        else if (m_failedSavingThrows == 3)
+        {
+            m_isDead = true;
+            std::cout << GetName() << " погиб.\n";
+            // Удаляется из трекера
+            return;
+        }
+    }
+    else
+    {
+        m_successfulSavingThrows = 0;
+        m_failedSavingThrows     = 0;
+        // Совершает ход
+        std::cout << "Персонаж игрока " << GetName() << " совершает атаку.\n";
+    }
 }
