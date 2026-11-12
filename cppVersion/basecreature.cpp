@@ -28,6 +28,41 @@ BaseCreature::BaseCreature()
 {
 }
 
+BaseCreature::BaseCreature(const BaseCreature& other)
+    : m_name{other.GetName()}
+    , m_currentHp{other.GetCurrentHp()}
+    , m_maxHp{other.GetMaxHp()}
+    , m_attributes{other.m_attributes}
+{
+    ++s_creatureCount;
+    std::cout << "BaseCreature(const BaseCreature& other) -> объект скопирован\n";
+}
+
+BaseCreature::BaseCreature(BaseCreature&& other) noexcept
+    : m_name{std::move(other.m_name)}
+    , m_maxHp{other.m_maxHp}
+    , m_currentHp{other.m_currentHp}
+    , m_attributes{std::move(other.m_attributes)}
+{
+    ++s_creatureCount;
+    std::cout << "BaseCreature(BaseCreature&& other) -> объект перемещен\n";
+}
+
+BaseCreature& BaseCreature::operator=(const BaseCreature& other)
+{
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    m_name       = other.GetName();
+    m_maxHp      = other.GetMaxHp();
+    m_currentHp  = other.GetCurrentHp();
+    m_attributes = other.m_attributes;
+
+    return *this;
+}
+
 BaseCreature::~BaseCreature()
 {
     --s_creatureCount;
