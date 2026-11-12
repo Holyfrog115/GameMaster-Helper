@@ -22,6 +22,8 @@ public:
     PlayerCharacter& operator=(PlayerCharacter&& other) noexcept = default;
     ~PlayerCharacter() override;
 
+    std::unique_ptr<BaseCreature> Clone() const override;
+
     int GetLevel() const
     {
         return m_level;

@@ -68,6 +68,11 @@ PlayerCharacter::~PlayerCharacter()
     std::cout << "~PlayerCharacter() -> Объект уничтожен (" << GetName() << ")\n";
 }
 
+std::unique_ptr<BaseCreature> PlayerCharacter::Clone() const
+{
+    return std::make_unique<PlayerCharacter>(*this);
+}
+
 void PlayerCharacter::LevelUp()
 {
     if (m_level < 20)

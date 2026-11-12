@@ -41,6 +41,11 @@ EnemyCreature::~EnemyCreature()
     std::cout << "~EnemyCreature() -> Объект уничтожен.\n";
 }
 
+std::unique_ptr<BaseCreature> EnemyCreature::Clone() const
+{
+    return std::make_unique<EnemyCreature>(*this);
+}
+
 void EnemyCreature::PrintInfo() const
 {
     std::cout << " - Название существа: " << GetName() << "\n";

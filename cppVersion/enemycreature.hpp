@@ -20,6 +20,8 @@ public:
     EnemyCreature& operator=(EnemyCreature&& other) noexcept = default;
     ~EnemyCreature() override;
 
+    std::unique_ptr<BaseCreature> Clone() const override;
+
     double GetChallengeRating() const
     {
         return m_challengeRating;

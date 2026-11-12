@@ -24,6 +24,8 @@ public:
     BaseCreature();
     virtual ~BaseCreature();
 
+    virtual std::unique_ptr<BaseCreature> Clone() const = 0;
+
     std::string GetName() const
     {
         return m_name;
