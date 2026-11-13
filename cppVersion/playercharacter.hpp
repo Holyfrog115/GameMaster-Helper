@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-class PlayerCharacter : public BaseCreature
+class PlayerCharacter final : public BaseCreature
 {
 private:
     int m_level;
