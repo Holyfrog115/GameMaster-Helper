@@ -100,7 +100,12 @@ int BaseCreature::CalculateModifier(const std::string& attribute) const
 
 void BaseCreature::PrintInfo() const
 {
-    std::cout << " - Имя персонажа: " << GetName() << "\n";
+    std::string name = GetName();
+    if (name.length() > 64)
+    {
+        name = name.substr(0, 64) + "...";
+    }
+    std::cout << " - Имя персонажа: " << name << "\n";
     std::cout << " - Максимальное здоровье: " << GetMaxHp() << "\n";
     std::cout << " - Текущее здоровье: " << GetCurrentHp() << "\n";
 }

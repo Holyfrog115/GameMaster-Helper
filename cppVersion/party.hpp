@@ -19,4 +19,6 @@ public:
     void RemoveCharacter(size_t index);
     int CalcAvgLevel() const;
     void PrintParty() const;
+    bool SearchCharacter(const std::string& name) const;
+    bool SearchCharacterByFullName(const std::string& name) const;
 };

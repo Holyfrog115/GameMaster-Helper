@@ -48,7 +48,12 @@ std::unique_ptr<BaseCreature> EnemyCreature::Clone() const
 
 void EnemyCreature::PrintInfo() const
 {
-    std::cout << " - Существо: " << GetName() << "\n";
+    std::string name = GetName();
+    if (name.length() > 64)
+    {
+        name = name.substr(0, 64) + "...";
+    }
+    std::cout << " - Существо: " << name << "\n";
     std::cout << " - Максимальное здоровье: " << GetMaxHp() << "\n";
     std::cout << " - Текущее здоровье: " << GetCurrentHp() << "\n";
     std::cout << " - Тип существа: " << m_type << "\n";
