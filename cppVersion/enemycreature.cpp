@@ -48,12 +48,12 @@ std::unique_ptr<BaseCreature> EnemyCreature::Clone() const
 
 void EnemyCreature::PrintInfo() const
 {
-    std::cout << " - Название существа: " << GetName() << "\n";
-    std::cout << " - Тип существа: " << m_type << "\n";
-    std::cout << " - Уровень опасности: " << m_challengeRating << "\n";
-    std::cout << " - Количество опыта за победу: " << m_xpReward << "\n";
+    std::cout << " - Существо: " << GetName() << "\n";
     std::cout << " - Максимальное здоровье: " << GetMaxHp() << "\n";
     std::cout << " - Текущее здоровье: " << GetCurrentHp() << "\n";
+    std::cout << " - Тип существа: " << m_type << "\n";
+    std::cout << " - Уровень опасности: " << m_challengeRating << "\n";
+    std::cout << " - Награда за победу: " << m_xpReward << " опыта\n";
     std::cout << " - Характеристики:\n";
     m_attributes->PrintAttributes();
 }

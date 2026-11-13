@@ -126,6 +126,6 @@ public:
     void Heal(int heal);
     int RollInitiative() const;
     int CalculateModifier(const std::string& attribute) const;
-    virtual void PrintInfo() const = 0;
-    virtual void TakeTurn()        = 0;
+    virtual void PrintInfo() const;
+    virtual void TakeTurn() = 0;
 };

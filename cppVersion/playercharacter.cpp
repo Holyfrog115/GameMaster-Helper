@@ -93,11 +93,9 @@ int PlayerCharacter::CalculateCarryingCapacity() const
 
 void PlayerCharacter::PrintInfo() const
 {
-    std::cout << " - Имя персонажа: " << GetName() << "\n";
+    BaseCreature::PrintInfo();
     std::cout << " - Класс: " << m_class << "\n";
     std::cout << " - Уровень: " << m_level << "\n";
-    std::cout << " - Максимальное здоровье: " << GetMaxHp() << "\n";
-    std::cout << " - Текущее здоровье: " << GetCurrentHp() << "\n";
     std::cout << " - Характеристики:\n";
     m_attributes->PrintAttributes();
 }
