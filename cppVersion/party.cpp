@@ -60,6 +60,18 @@ void Party::RemoveCharacter(size_t index)
     }
 }
 
+void Party::RemoveCharacter(const PlayerCharacter* character)
+{
+    for (size_t i = 0; i < m_members.size(); ++i)
+    {
+        if (m_members[i].get() == character)
+        {
+            m_members.erase(m_members.begin() + i);
+            return;
+        }
+    }
+}
+
 int Party::CalcAvgLevel() const
 {
     if (m_members.empty())

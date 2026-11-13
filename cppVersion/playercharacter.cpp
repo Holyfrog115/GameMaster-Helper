@@ -1,5 +1,6 @@
 #include "playercharacter.hpp"
 #include "attributes.hpp"
+#include "party.hpp"
 #include "utility.hpp"
 #include <iostream>
 #include <memory>
@@ -89,6 +90,11 @@ void PlayerCharacter::LevelUp()
 int PlayerCharacter::CalculateCarryingCapacity() const
 {
     return m_attributes->CalculateCarryingCapacity();
+}
+
+void PlayerCharacter::LeaveParty(Party& party)
+{
+    party.RemoveCharacter(this);
 }
 
 void PlayerCharacter::PrintInfo() const

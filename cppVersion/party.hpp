@@ -17,6 +17,7 @@ public:
     void AddCharacter(std::shared_ptr<PlayerCharacter> character);
     void AddCharacter(const std::vector<std::shared_ptr<PlayerCharacter>>& characters);
     void RemoveCharacter(size_t index);
+    void RemoveCharacter(const PlayerCharacter* character);
     int CalcAvgLevel() const;
     void PrintParty() const;
     bool SearchCharacter(const std::string& name) const;

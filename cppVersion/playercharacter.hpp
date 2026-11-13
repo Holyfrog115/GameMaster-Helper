@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 
+class Party;
+
 class PlayerCharacter final : public BaseCreature
 {
 private:
@@ -62,4 +64,5 @@ public:
     int CalculateCarryingCapacity() const;
     void PrintInfo() const override;
     void TakeTurn() override;
+    void LeaveParty(Party& party);
 };
