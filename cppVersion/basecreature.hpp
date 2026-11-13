@@ -26,6 +26,11 @@ public:
 
     virtual std::unique_ptr<BaseCreature> Clone() const = 0;
 
+    static int GetCreatureCount()
+    {
+        return s_creatureCount;
+    }
+
     std::string GetName() const
     {
         return m_name;
