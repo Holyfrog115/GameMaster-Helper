@@ -1,5 +1,4 @@
 package com.github.holyfrog115.gmhelper.model;
-import com.github.holyfrog115.gmhelper.model.Attributes;
 
 public class EnemyCreature extends BaseCreature {
     private double challengeRating;

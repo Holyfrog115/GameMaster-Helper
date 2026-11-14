@@ -1,6 +1,5 @@
 package com.github.holyfrog115.gmhelper.model;
 import com.github.holyfrog115.gmhelper.utils.DiceUtils;
-import com.github.holyfrog115.gmhelper.model.Attributes;
 
 public abstract class BaseCreature {
     private String name;
