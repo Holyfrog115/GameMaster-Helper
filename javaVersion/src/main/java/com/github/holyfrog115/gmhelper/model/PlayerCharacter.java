@@ -1,187 +1,142 @@
 package com.github.holyfrog115.gmhelper.model;
 import com.github.holyfrog115.gmhelper.utils.DiceUtils;
-
 import java.util.Objects;
 
-public class PlayerCharacter implements AutoCloseable {
-    private String name;
+public final class PlayerCharacter extends BaseCreature implements AutoCloseable {
     private int level;
-    private int currentHp;
-    private int maxHp;
-    private Attributes attributes;
+    private int successfulSavingThrows = 0;
+    private int failedSavingThrows = 0;
+    private boolean isDead = false;
+    private String characterClass;
 
-    public PlayerCharacter(int str, int dex, int con, int intel, int wis, int cha, String name, int level, int maxHp) {
-        this.attributes = new Attributes(str, dex, con, intel, wis, cha);
-        this.name = name;
+    public PlayerCharacter(int str, int dex, int con, int intel, int wis, int cha,
+                           String name, int level, int maxHp, String characterClass) {
+        super(name, maxHp, str, dex, con, intel, wis, cha);
+        this.characterClass = characterClass;
+
         if (level < 1) {
             System.out.println("Ошибка. Неположительный уровень персонажа. Установлен 1 уровень.");
             this.level = 1;
-        }
-        else if (level > 20) {
+        } else if (level > 20) {
             System.out.println("Ошибка. Уровень персонажа > 20. Установлен 20 уровень.");
             this.level = 20;
-        }
-        else {
+        } else {
             this.level = level;
         }
-        if (maxHp < 1) {
-            System.out.println("Ошибка. Неположительное значение максимального здоровья. Установлено значение - 1");
-            this.maxHp = 1;
-        }
-        else {
-            this.maxHp = maxHp;
-        }
-        this.currentHp = maxHp;
-        System.out.println("Объект класса PlayerCharacter создан");
+
+        System.out.println("PlayerCharacter() -> Объект создан (" + getName() + ")");
+    }
+
+    public PlayerCharacter() {
+        this(10, 10, 10, 10, 10, 10, "", 1, 1, "");
+    }
+
+    public PlayerCharacter(PlayerCharacter other) {
+        super(other);
+        this.attributes = new Attributes(other.attributes);
+        this.characterClass = other.characterClass;
+        this.successfulSavingThrows = other.successfulSavingThrows;
+        this.failedSavingThrows = other.failedSavingThrows;
+        this.isDead = other.isDead;
+        this.level = other.level;
+        System.out.println("PlayerCharacter(const PlayerCharacter& other) -> объект скопирован");
+    }
+
+    @Override
+    public PlayerCharacter clone() {
+        return new PlayerCharacter(this);
     }
 
     @Override
     public void close() {
-        System.out.println("Ресурс объекта класса PlayerCharacter закрыт");
+        System.out.println("~PlayerCharacter() -> Объект уничтожен (" + getName() + ")");
     }
 
-    // get методы
-
-    public String getName() {
-        return name;
-    }
+    // Get методы
 
     public int getLevel() {
         return level;
     }
 
-    public int getCurrentHp() {
-        return currentHp;
+    public boolean isDead() {
+        return isDead;
     }
 
-    public int getMaxHp() {
-        return maxHp;
+    public String getCharacterClass() {
+        return characterClass;
     }
 
-    public int getStrength() {
-        return attributes.getStrength();
-    }
-
-    public int getDexterity() {
-        return attributes.getDexterity();
-    }
-
-    public int getConstitution() {
-        return attributes.getConstitution();
-    }
-
-    public int getIntelligence() {
-        return attributes.getIntelligence();
-    }
-
-    public int getWisdom() {
-        return attributes.getWisdom();
-    }
-
-    public int getCharisma() {
-        return attributes.getCharisma();
-    }
-
-    // set методы
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCurrentHp(int currentHp) {
-        this.currentHp = currentHp;
-    }
+    // Set методы
 
     public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public void setMaxHp(int maxHp) {
-        this.maxHp = maxHp;
-    }
-
-    public void setStrength(int strength) {
-        attributes.setStrength(strength);
-    }
-
-    public void setDexterity(int dexterity) {
-        attributes.setDexterity(dexterity);
-    }
-
-    public void setConstitution(int constitution) {
-        attributes.setConstitution(constitution);
-    }
-
-    public void setIntelligence(int intelligence) {
-        attributes.setIntelligence(intelligence);
-    }
-
-    public void setWisdom(int wisdom) {
-        attributes.setWisdom(wisdom);
-    }
-
-    public void setCharisma(int charisma) {
-        attributes.setCharisma(charisma);
-    }
-
-
-    public void takeDamage(int damage) {
-        if (damage < 0) {
-            System.out.println("Ошибка. Значение урона должно быть положительным.");
-            return;
-        }
-        if (currentHp - damage < 0) {
-            currentHp = 0;
-        }
-        else {
-            currentHp -= damage;
+        if (level < 1) {
+            System.out.println("Ошибка. Неположительный уровень персонажа.");
+        } else if (level > 20) {
+            System.out.println("Ошибка. Уровень персонажа > 20.");
+        } else {
+            this.level = level;
         }
     }
 
-    public void heal(int heal) {
-        if (heal < 0) {
-            System.out.println("Ошибка. Значение исцеления должно быть положительным.");
-            return;
-        }
-        if (currentHp + heal > maxHp) {
-            currentHp = maxHp;
-        }
-        else {
-            currentHp += heal;
-        }
+    public void setCharacterClass(String characterClass) {
+        this.characterClass = characterClass;
     }
+
+    // Основные методы
 
     public void levelUp() {
         if (level < 20) {
             level++;
             System.out.println("Уровень повышен. Текущий уровень: " + level);
-        }
-        else {
+        } else {
             System.out.println("Невозможно повысить уровень. Достигнут максимальный уровень (20).");
         }
-    }
-
-    public int calculateModifier(String attribute) {
-        return attributes.calculateModifier(attribute);
-    }
-
-    public int rollInitiative() {
-        return DiceUtils.rollD20() + attributes.calculateModifier("dex");
     }
 
     public int calculateCarryingCapacity() {
         return attributes.calculateCarryingCapacity();
     }
 
+    public void leaveParty(Party party) {
+        party.removeCharacter(this);
+    }
+
+    @Override
+    public void takeTurn() {
+        if (isDead) {
+            return;
+        }
+        if (getCurrentHp() == 0) {
+            if (DiceUtils.rollD20() >= 10) {
+                successfulSavingThrows++;
+                System.out.println("Успешный спасбросок. (" + successfulSavingThrows + " из 3)");
+            } else {
+                failedSavingThrows++;
+                System.out.println("Провальный спасбросок. (" + failedSavingThrows + " из 3)");
+            }
+
+            if (successfulSavingThrows == 3) {
+                System.out.println(getName() + " стабилизировался и восстанавливает 1 HP");
+                setCurrentHp(1);
+            } else if (failedSavingThrows == 3) {
+                isDead = true;
+                System.out.println(getName() + " погиб.");
+            }
+        } else {
+            successfulSavingThrows = 0;
+            failedSavingThrows = 0;
+            System.out.println("Персонаж игрока " + getName() + " совершает атаку.");
+        }
+    }
+
     @Override
     public String toString() {
         return """
-           - Имя персонажа: %s
-           - Уровень: %d
-           - Максимальное здоровье: %d
-           - Текущее здоровье: %d
-           - Характеристики:
-           %s""".formatted(name, level, maxHp, currentHp, attributes);
+                %s
+                 - Класс: %s
+                 - Уровень: %d
+                 - Характеристики:
+                %s""".formatted(super.toString(), characterClass, level, attributes);
     }
 
     @Override
@@ -189,7 +144,14 @@ public class PlayerCharacter implements AutoCloseable {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         PlayerCharacter character = (PlayerCharacter) obj;
-        return Objects.equals(name, character.getName()) && Objects.equals(level, character.getLevel())
-                && Objects.equals(maxHp, character.getMaxHp());
+        return level == character.level
+                && getMaxHp() == character.getMaxHp()
+                && Objects.equals(getName(), character.getName())
+                && Objects.equals(characterClass, character.characterClass);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), level, getMaxHp(), characterClass);
     }
 }

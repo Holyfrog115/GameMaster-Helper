@@ -18,6 +18,16 @@ public class Attributes implements AutoCloseable {
         System.out.println("Объект класса Attributes создан");
     }
 
+    public Attributes(Attributes other) {
+        this.strength = validAttribute(other.strength);
+        this.dexterity = validAttribute(other.dexterity);
+        this.constitution = validAttribute(other.constitution);
+        this.intelligence = validAttribute(other.intelligence);
+        this.wisdom = validAttribute(other.wisdom);
+        this.charisma = validAttribute(other.charisma);
+        System.out.println("Объект класса Attributes создан");
+    }
+
     @Override
     public void close() {
         System.out.println("Ресурс объекта класса Attributes закрыт");

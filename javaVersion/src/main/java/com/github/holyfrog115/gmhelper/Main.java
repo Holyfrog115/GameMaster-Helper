@@ -2,20 +2,24 @@ package com.github.holyfrog115.gmhelper;
 
 import com.github.holyfrog115.gmhelper.model.Party;
 import com.github.holyfrog115.gmhelper.model.PlayerCharacter;
+import com.github.holyfrog115.gmhelper.model.BaseCreature;
+import com.github.holyfrog115.gmhelper.model.EnemyCreature;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
         // Композиция
         System.out.println("--- КОМПОЗИЦИЯ ---");
         PlayerCharacter character1 = new PlayerCharacter(10, 10, 10, 14, 12,
-                15, "Робослав", 5, 65);
+                15, "Робослав", 5, 65, "Воин");
         PlayerCharacter character2 = new PlayerCharacter(16, 10, 14, 8, 8,
-                10, "Иван-Джон-Пьер", 6, 105);
+                10, "Иван-Джон-Пьер", 6, 105, "Варвар");
         PlayerCharacter character3 = new PlayerCharacter(8, 8, 8, 15, 15,
-                12, "Нилбог", 4, 32);
+                12, "Нилбог", 4, 32, "Жрец");
         System.out.println("Состояние после вызова методов класса PlayerCharacter, использующих объект класса Attributes:");
         character1.takeDamage(1000);
         character1.heal(10);
@@ -65,7 +69,7 @@ public class Main {
         // Освобождение ресурса без деструктора
         System.out.println("\n--- Освобождение ресурса без деструктора ---");
         try (PlayerCharacter characterTemp = new PlayerCharacter(10, 10, 10, 10, 10, 10,
-                "temp", 1, 10)) {}
+                "temp", 1, 10, "")) {}
 
         // РАБОТА СБОРЩИКА МУСОРА
         System.out.println("\n--- РАБОТА СБОРЩИКА МУСОРА ---");
@@ -73,7 +77,7 @@ public class Main {
         {
             System.out.println("Создание объекта во внутреннем блоке");
             PlayerCharacter characterTemp = new PlayerCharacter(10, 10, 10, 10, 10, 10,
-                    "temp", 1, 10);
+                    "temp", 1, 10, "");
             watcher = new WeakReference<>(characterTemp);
             characterTemp = null;
             System.out.println("Выход из блока");
@@ -82,5 +86,53 @@ public class Main {
         System.out.println("На объект не указывают ссылки. Принудительный запуск сборщика мусора");
         System.gc();
         System.out.println((watcher.get() != null) + ": объект уничтожен"); // false
+
+        // ДЕМОНСТРАЦИОННАЯ ПРОГРАММА: ПОЛИМОРФИЗМ, ПОВЕРХНОСТНОЕ И ГЛУБОКОЕ КОПИРОВАНИЕ
+        System.out.println("\n--- ДЕМОНСТРАЦИОННАЯ ПРОГРАММА ЛР 4 ---");
+        System.out.println("Количество существ: " + BaseCreature.getCreatureCount() + "\n");
+
+        {
+            List<BaseCreature> creatures = new ArrayList<>();
+            creatures.add(new PlayerCharacter(12, 14, 13, 10, 11, 16,
+                    "Богдан Милорад Тихоншвили", 3, 24, "Колдун"));
+            creatures.add(new EnemyCreature(10, 14, 10, 8, 8, 6,
+                    "Гоблин", 7, 0.25, 50, "Гуманоид"));
+            creatures.add(new EnemyCreature());
+
+            for (BaseCreature creature : creatures) {
+                System.out.println(creature);
+                creature.takeTurn();
+                System.out.println();
+            }
+
+            // Клонирование через переопределённый метод clone()
+            creatures.add(creatures.get(0).clone()); // Глубокая копия (PlayerCharacter)
+            creatures.add(creatures.get(1).clone()); // Поверхностная копия (EnemyCreature)
+            System.out.println("Существ после клонирования: " + BaseCreature.getCreatureCount());
+
+            creatures.get(3).setStrength(20); // Изменение силы у клона игрока
+            creatures.get(4).setStrength(20); // Изменение силы у клона врага
+
+            System.out.println("Значение силы после ее изменения у копий:");
+            System.out.println("Игрок - оригинал: " + creatures.get(0).getStrength()
+                    + ", копия: " + creatures.get(3).getStrength());
+            System.out.println("Враг - оригинал: " + creatures.get(1).getStrength()
+                    + ", копия: " + creatures.get(4).getStrength() + "\n");
+        }
+
+        // РАБОТА СО СТРОКАМИ И ССЫЛКОЙ THIS
+        System.out.println("--- РАБОТА СО СТРОКАМИ И ССЫЛКОЙ THIS ---");
+        {
+            PlayerCharacter member = new PlayerCharacter(12, 10, 12, 10, 10, 10,
+                    "Иван-Джон-Константин-Пьер-Маркус-Роман I", 4, 30, "Плут");
+            Party party = new Party(member);
+            System.out.println(party);
+
+            System.out.println("Поиск по подстроке \"Пьер\" (contains): " + party.searchCharacter("Пьер"));
+            System.out.println("Поиск по полному имени \"Пьер\" (equals): " + party.searchCharacterByFullName("Пьер"));
+
+            member.leaveParty(party);
+            System.out.println(party);
+        }
     }
 }
