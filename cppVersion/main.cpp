@@ -1,4 +1,5 @@
 #include "attributes.hpp"
+#include "enemycreature.hpp"
 #include "party.hpp"
 #include "playercharacter.hpp"
 #include <iostream>
@@ -146,6 +147,56 @@ int main()
     else
     {
         std::cout << "Объект был удален\n";
+    }
+
+    // Демонстрационная программа, полиморфизм, поверхностное и глубокое копирование
+    std::cout << "\n--- ДЕМОНСТРАЦИОННАЯ ПРОГРАММА ЛР 4 ---\n";
+    std::cout << "Количество существ: " << BaseCreature::GetCreatureCount() << "\n\n";
+
+    {
+        std::vector<std::unique_ptr<BaseCreature>> creatures;
+        creatures.push_back(
+            std::make_unique<PlayerCharacter>(12, 14, 13, 10, 11, 16, "Богдан Милорад Тихоншвили", 3, 24, "Колдун"));
+        creatures.push_back(std::make_unique<EnemyCreature>(10, 14, 10, 8, 8, 6, "Гоблин", 7, 0.25, 50, "Гуманоид"));
+        creatures.push_back(std::make_unique<EnemyCreature>());
+
+        for (const std::unique_ptr<BaseCreature>& creature : creatures)
+        {
+            creature->PrintInfo();
+            creature->TakeTurn();
+            std::cout << "\n";
+        }
+
+        // Клонирование через виртуальный метод Clone()
+        creatures.push_back(creatures[0]->Clone()); // Глубокая копия (PlayerCharacter)
+        creatures.push_back(creatures[1]->Clone()); // Поверхностная копия (EnemyCreature)
+        std::cout << "Существ после клонирования: " << BaseCreature::GetCreatureCount() << "\n";
+
+        creatures[3]->SetStrength(20); // Изменение силы у клона игрока
+        creatures[4]->SetStrength(20); // Изменение силы у клона врага
+
+        std::cout << "Значение силы после ее изменения у копий:\n";
+        std::cout << "Игрок - оригинал: " << creatures[0]->GetStrength() << ", копия: " << creatures[3]->GetStrength()
+                  << "\n";
+        std::cout << "Враг - оригинал: " << creatures[1]->GetStrength() << ", копия: " << creatures[4]->GetStrength()
+                  << "\n\n";
+    }
+
+    std::cout << "\nСуществ после очистки вектора: " << BaseCreature::GetCreatureCount() << "\n\n";
+
+    // Работа со строками и указателем this
+    {
+        auto member = std::make_shared<PlayerCharacter>(12, 10, 12, 10, 10, 10,
+                                                        "Иван-Джон-Константин-Пьер-Маркус-Роман I", 4, 30, "Плут");
+        Party party(member);
+        party.PrintParty();
+
+        std::cout << std::boolalpha;
+        std::cout << "Поиск по подстроке \"Пьер\" (find): " << party.SearchCharacter("Пьер") << "\n";
+        std::cout << "Поиск по полному имени \"Пьер\" (==): " << party.SearchCharacterByFullName("Пьер") << "\n";
+
+        member->LeaveParty(party);
+        party.PrintParty();
     }
 
     std::cout << "\n";
