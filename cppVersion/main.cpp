@@ -1,7 +1,9 @@
 #include "attributes.hpp"
 #include "enemycreature.hpp"
+#include "ilootable.hpp"
 #include "party.hpp"
 #include "playercharacter.hpp"
+#include "treasurechest.hpp"
 #include <iostream>
 #include <memory>
 #if defined(_WIN32) || defined(_WIN64)
@@ -197,6 +199,19 @@ int main()
 
         member->LeaveParty(party);
         party.PrintParty();
+    }
+
+    // Демонстрационная программа, полиморфизм, интерфейс и исключения
+    std::cout << "\n--- ДЕМОНСТРАЦИОННАЯ ПРОГРАММА ЛР 5 ---\n";
+    EnemyCreature goblin(10, 14, 10, 8, 8, 6, "Гоблин", 7, 0.25, 50, "Гуманоид");
+    TreasureChest chest("Древний сундук", 120, 20);
+    Party party({character1, character2, character3});
+
+    std::vector<const Ilootable*> lootSources = {&goblin, &chest};
+    for (const Ilootable* source : lootSources)
+    {
+        party.DistributeReward(*source);
+        std::cout << "\n";
     }
 
     std::cout << "\n";
