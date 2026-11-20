@@ -77,3 +77,9 @@ void EnemyCreature::TakeTurn()
         std::cout << GetName() << " совершает атаку.\n";
     }
 }
+
+std::string EnemyCreature::GetLootDescription() const
+{
+    return "Награды из " + GetName() + "\n" + " - " + std::to_string(GetGoldReward()) + " золота\n" + " - " +
+           std::to_string(GetXpReward()) + " опыта\n";
+}
