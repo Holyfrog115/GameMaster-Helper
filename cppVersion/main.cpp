@@ -1,9 +1,12 @@
 #include "attributes.hpp"
 #include "enemycreature.hpp"
+#include "idamagepolicy.hpp"
 #include "ilootable.hpp"
 #include "party.hpp"
 #include "playercharacter.hpp"
+#include "resistancedp.hpp"
 #include "treasurechest.hpp"
+#include "vulnerabilitydp.hpp"
 #include <iostream>
 #include <memory>
 #if defined(_WIN32) || defined(_WIN64)
@@ -243,6 +246,23 @@ int main()
             std::cout << creature->GetName() << " не реализует ILootable. Добычи нет.\n";
         }
     }
+
+    // Конфигурирование
+    std::cout << "Конфигурирование:\n";
+    PlayerCharacter barbarian(16, 12, 16, 8, 10, 10, "Грог", 5, 60, "Варвар");
+
+    barbarian.TakeDamage(15);
+    std::cout << "Текущее HP: " << barbarian.GetCurrentHp() << "\n";
+
+    // Динамическая смена поведения
+    barbarian.SetDamagePolicy(std::make_unique<ResistanceDamagePolicy>());
+    barbarian.TakeDamage(15);
+    std::cout << "Текущее HP: " << barbarian.GetCurrentHp() << "\n";
+
+    // Динамическая смена поведения
+    barbarian.SetDamagePolicy(std::make_unique<VulnerabilityDamagePolicy>());
+    barbarian.TakeDamage(15);
+    std::cout << "Текущее HP: " << barbarian.GetCurrentHp() << "\n";
 
     std::cout << "\n";
 
