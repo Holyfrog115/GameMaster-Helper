@@ -1,5 +1,6 @@
 #pragma once
 #include "attributes.hpp"
+#include "idamagepolicy.hpp"
 #include <memory>
 #include <string>
 
@@ -10,12 +11,13 @@ private:
     int m_currentHp;
     int m_maxHp;
     inline static int s_creatureCount = 0;
+    std::unique_ptr<IDamagePolicy> m_damagePolicy;
 
 protected:
     std::shared_ptr<Attributes> m_attributes;
     BaseCreature(const BaseCreature& other);
     BaseCreature(BaseCreature&& other) noexcept;
-    BaseCreature& operator=(const BaseCreature& other)     = default;
+    BaseCreature& operator=(const BaseCreature& other);
     BaseCreature& operator=(BaseCreature&& other) noexcept = default;
 
 public:
@@ -134,4 +136,5 @@ public:
     virtual void PrintInfo() const;
     virtual void TakeTurn() = 0;
     void PrintCategory() const;
+    void SetDamagePolicy(std::unique_ptr<IDamagePolicy> policy);
 };
