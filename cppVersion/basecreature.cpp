@@ -95,6 +95,14 @@ void BaseCreature::TakeDamage(int damage)
     }
 }
 
+void BaseCreature::SetDamagePolicy(std::unique_ptr<IDamagePolicy> policy)
+{
+    if (policy != nullptr)
+    {
+        m_damagePolicy = std::move(policy);
+    }
+}
+
 void BaseCreature::Heal(int heal)
 {
     if (heal < 0)
