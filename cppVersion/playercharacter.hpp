@@ -65,4 +65,5 @@ public:
     void PrintInfo() const override;
     void TakeTurn() override;
     void LeaveParty(Party& party);
+    void PrintCategory() const;
 };

@@ -109,3 +109,8 @@ void BaseCreature::PrintInfo() const
     std::cout << " - Максимальное здоровье: " << GetMaxHp() << "\n";
     std::cout << " - Текущее здоровье: " << GetCurrentHp() << "\n";
 }
+
+void BaseCreature::PrintCategory() const
+{
+    std::cout << "Категория: Базовое существо\n";
+}

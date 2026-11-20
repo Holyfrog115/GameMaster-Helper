@@ -146,3 +146,8 @@ void PlayerCharacter::TakeTurn()
         std::cout << "Персонаж игрока " << GetName() << " совершает атаку.\n";
     }
 }
+
+void PlayerCharacter::PrintCategory() const
+{
+    std::cout << "Категория: Персонаж игрока (" << m_class << ")\n";
+}

@@ -133,4 +133,5 @@ public:
     int CalculateModifier(const std::string& attribute) const;
     virtual void PrintInfo() const;
     virtual void TakeTurn() = 0;
+    void PrintCategory() const;
 };
