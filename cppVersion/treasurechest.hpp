@@ -41,5 +41,5 @@ public:
         return m_gold;
     }
 
-    std::string GetLootDescription() const override {}
+    std::string GetLootDescription() const override;
 };
