@@ -224,6 +224,26 @@ int main()
     std::cout << "Вызов через указатель на BaseCreature виртуального метода:\n";
     hero->TakeTurn();
 
+    // Проверка типа во время выполнения
+    std::vector<std::unique_ptr<BaseCreature>> battlefield;
+    battlefield.push_back(
+        std::make_unique<PlayerCharacter>(12, 14, 13, 10, 11, 16, "Богдан Милорад Тихоншвили", 3, 24, "Колдун"));
+    battlefield.push_back(std::make_unique<EnemyCreature>(10, 14, 10, 8, 8, 6, "Гоблин", 7, 0.25, 50, "Гуманоид"));
+    battlefield.push_back(std::make_unique<EnemyCreature>(16, 12, 16, 7, 11, 10, "Орк", 15, 0.5, 100, "Гуманоид"));
+
+    std::cout << "\nПроверка типа во время выполнения:\n";
+    for (const std::unique_ptr<BaseCreature>& creature : battlefield)
+    {
+        if (auto* lootable = dynamic_cast<Ilootable*>(creature.get()))
+        {
+            party.DistributeReward(*lootable);
+        }
+        else
+        {
+            std::cout << creature->GetName() << " не реализует ILootable. Добычи нет.\n";
+        }
+    }
+
     std::cout << "\n";
 
     return 0;
