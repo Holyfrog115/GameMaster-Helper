@@ -1,4 +1,5 @@
 #include "attributes.hpp"
+#include "enemycreature.hpp"
 #include "party.hpp"
 #include "playercharacter.hpp"
 #include <iostream>
@@ -15,13 +16,14 @@ int main()
 #endif
     // Композиция
     std::cout << "--- КОМПОЗИЦИЯ: ---\n";
-    std::shared_ptr<PlayerCharacter> character1 =
-        std::make_shared<PlayerCharacter>(10, 10, 10, 14, 12, 15, "Робослав", 5, 65);
+    std::shared_ptr<PlayerCharacter> character1 = std::make_shared<PlayerCharacter>(
+        10, 10, 10, 14, 12, 15,
+        "РобославРобославРобославРобославРобославРобославРобославРобославРобославРобославРобослав", 5, 65, "Воин");
     std::shared_ptr<PlayerCharacter> character2 =
-        std::make_shared<PlayerCharacter>(16, 10, 14, 8, 8, 10, "Иван-Джон-Пьер", 6, 105);
+        std::make_shared<PlayerCharacter>(16, 10, 14, 8, 8, 10, "Иван-Джон-Пьер", 6, 105, "Варвар");
     std::shared_ptr<PlayerCharacter>& character2ref = character2;
     std::shared_ptr<PlayerCharacter> character3 =
-        std::make_shared<PlayerCharacter>(8, 8, 8, 15, 15, 12, "Нилбог", 4, 32);
+        std::make_shared<PlayerCharacter>(8, 8, 8, 15, 15, 12, "Нилбог", 4, 32, "Жрец");
 
     // Вызов методов класса PlayerCharacter, которые используют методы класса Attributes
     std::cout << "Вызов методов класса PlayerCharacter:\n";
@@ -33,7 +35,7 @@ int main()
 
     std::cout << "При инициализации объекта класса PlayerCharacter создается объект класса Attributes:\n";
     {
-        PlayerCharacter character4(8, 8, 8, 15, 15, 12, "Пример композиции", 4, 32);
+        PlayerCharacter character4(8, 8, 8, 15, 15, 12, "Пример композиции", 4, 32, "");
         std::cout << "При удалении объекта класса Playercharacter удаляется и объект класса Attributes:\n";
     }
 
@@ -69,14 +71,14 @@ int main()
     // Статическая инициализация объекта
     std::cout << "\n--- СТАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ОБЪЕКТА ---\n";
     {
-        static PlayerCharacter staticCharacter(10, 10, 10, 10, 10, 10, "Статик", 10, 10);
+        static PlayerCharacter staticCharacter(10, 10, 10, 10, 10, 10, "Статик", 10, 10, "");
     }
 
     // Динамическая инициализация объекта
     std::cout << "\n--- ДИНАМИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ОБЪЕКТА ---\n";
     std::unique_ptr<PlayerCharacter> dynamicCharacter;
     {
-        dynamicCharacter = std::make_unique<PlayerCharacter>(10, 10, 10, 10, 10, 10, "Динамическая память", 10, 10);
+        dynamicCharacter = std::make_unique<PlayerCharacter>(10, 10, 10, 10, 10, 10, "Динамическая память", 10, 10, "");
     }
     std::cout << "Имя: " << dynamicCharacter->GetName() << "\n";
 
@@ -84,11 +86,11 @@ int main()
     std::cout << "\n--- ТЕСТ МАССИВОВ ---\n";
     // 1. Динамический массив объектов
     std::vector<PlayerCharacter> army;
-    army.push_back(PlayerCharacter(12, 12, 12, 10, 10, 10, "Стражник 1", 2, 20));
+    army.push_back(PlayerCharacter(12, 12, 12, 10, 10, 10, "Стражник 1", 2, 20, "Воин"));
 
     // 2. Массив динамических объектов
     std::vector<std::unique_ptr<PlayerCharacter>> tavern;
-    tavern.push_back(std::make_unique<PlayerCharacter>(14, 10, 16, 8, 8, 18, "Стражник 2", 3, 25));
+    tavern.push_back(std::make_unique<PlayerCharacter>(14, 10, 16, 8, 8, 18, "Стражник 2", 3, 25, "Воин"));
 
     // Работа unique_ptr
     std::cout << "\n--- UNIQUE_PTR ---\n";
@@ -125,7 +127,7 @@ int main()
     std::weak_ptr<PlayerCharacter> party_;
     {
         std::shared_ptr<PlayerCharacter> party =
-            std::make_shared<PlayerCharacter>(12, 12, 12, 10, 10, 10, "Богдан Милорад Тихоншвили", 2, 20);
+            std::make_shared<PlayerCharacter>(12, 12, 12, 10, 10, 10, "Богдан Милорад Тихоншвили", 2, 20, "Колдун");
         party_ = party;
         if (std::shared_ptr<PlayerCharacter> partyTemp = party_.lock())
         {
@@ -145,6 +147,56 @@ int main()
     else
     {
         std::cout << "Объект был удален\n";
+    }
+
+    // Демонстрационная программа, полиморфизм, поверхностное и глубокое копирование
+    std::cout << "\n--- ДЕМОНСТРАЦИОННАЯ ПРОГРАММА ЛР 4 ---\n";
+    std::cout << "Количество существ: " << BaseCreature::GetCreatureCount() << "\n\n";
+
+    {
+        std::vector<std::unique_ptr<BaseCreature>> creatures;
+        creatures.push_back(
+            std::make_unique<PlayerCharacter>(12, 14, 13, 10, 11, 16, "Богдан Милорад Тихоншвили", 3, 24, "Колдун"));
+        creatures.push_back(std::make_unique<EnemyCreature>(10, 14, 10, 8, 8, 6, "Гоблин", 7, 0.25, 50, "Гуманоид"));
+        creatures.push_back(std::make_unique<EnemyCreature>());
+
+        for (const std::unique_ptr<BaseCreature>& creature : creatures)
+        {
+            creature->PrintInfo();
+            creature->TakeTurn();
+            std::cout << "\n";
+        }
+
+        // Клонирование через виртуальный метод Clone()
+        creatures.push_back(creatures[0]->Clone()); // Глубокая копия (PlayerCharacter)
+        creatures.push_back(creatures[1]->Clone()); // Поверхностная копия (EnemyCreature)
+        std::cout << "Существ после клонирования: " << BaseCreature::GetCreatureCount() << "\n";
+
+        creatures[3]->SetStrength(20); // Изменение силы у клона игрока
+        creatures[4]->SetStrength(20); // Изменение силы у клона врага
+
+        std::cout << "Значение силы после ее изменения у копий:\n";
+        std::cout << "Игрок - оригинал: " << creatures[0]->GetStrength() << ", копия: " << creatures[3]->GetStrength()
+                  << "\n";
+        std::cout << "Враг - оригинал: " << creatures[1]->GetStrength() << ", копия: " << creatures[4]->GetStrength()
+                  << "\n\n";
+    }
+
+    std::cout << "\nСуществ после очистки вектора: " << BaseCreature::GetCreatureCount() << "\n\n";
+
+    // Работа со строками и указателем this
+    {
+        auto member = std::make_shared<PlayerCharacter>(12, 10, 12, 10, 10, 10,
+                                                        "Иван-Джон-Константин-Пьер-Маркус-Роман I", 4, 30, "Плут");
+        Party party(member);
+        party.PrintParty();
+
+        std::cout << std::boolalpha;
+        std::cout << "Поиск по подстроке \"Пьер\" (find): " << party.SearchCharacter("Пьер") << "\n";
+        std::cout << "Поиск по полному имени \"Пьер\" (==): " << party.SearchCharacterByFullName("Пьер") << "\n";
+
+        member->LeaveParty(party);
+        party.PrintParty();
     }
 
     std::cout << "\n";

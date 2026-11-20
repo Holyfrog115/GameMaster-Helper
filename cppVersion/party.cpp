@@ -2,6 +2,7 @@
 #include "playercharacter.hpp"
 #include <algorithm>
 #include <iostream>
+#include <string>
 #include <vector>
 
 Party::Party()
@@ -28,12 +29,15 @@ Party::~Party()
 
 void Party::AddCharacter(std::shared_ptr<PlayerCharacter> character)
 {
-    m_members.push_back(character);
+    if (character != nullptr)
+    {
+        m_members.push_back(character);
+    }
 }
 
 void Party::AddCharacter(const std::vector<std::shared_ptr<PlayerCharacter>>& characters)
 {
-    for (std::shared_ptr<PlayerCharacter> character : characters)
+    for (const std::shared_ptr<PlayerCharacter>& character : characters)
     {
         if (std::find(m_members.begin(), m_members.end(), character) == m_members.end())
         {
@@ -56,6 +60,18 @@ void Party::RemoveCharacter(size_t index)
     }
 }
 
+void Party::RemoveCharacter(const PlayerCharacter* character)
+{
+    for (size_t i = 0; i < m_members.size(); ++i)
+    {
+        if (m_members[i].get() == character)
+        {
+            m_members.erase(m_members.begin() + i);
+            return;
+        }
+    }
+}
+
 int Party::CalcAvgLevel() const
 {
     if (m_members.empty())
@@ -64,7 +80,7 @@ int Party::CalcAvgLevel() const
     }
 
     int totalLevel = 0;
-    for (std::shared_ptr<PlayerCharacter> character : m_members)
+    for (const std::shared_ptr<PlayerCharacter>& character : m_members)
     {
         totalLevel += character->GetLevel();
     }
@@ -77,6 +93,37 @@ void Party::PrintParty() const
     std::cout << "Участники группы:\n";
     for (size_t i = 0; i < m_members.size(); ++i)
     {
-        std::cout << i + 1 << ". " << m_members[i]->GetName() << "\n";
+        std::string name = m_members[i]->GetName();
+        if (name.length() > 32)
+        {
+            name = name.substr(0, 32) + "...";
+        }
+        std::cout << i + 1 << ". " << name << "\n";
     }
+}
+
+bool Party::SearchCharacterByFullName(const std::string& name) const
+{
+    for (size_t i = 0; i < m_members.size(); ++i)
+    {
+        if (m_members[i]->GetName() == name)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Party::SearchCharacter(const std::string& name) const
+{
+    for (size_t i = 0; i < m_members.size(); ++i)
+    {
+        if (m_members[i]->GetName().find(name) != std::string::npos)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

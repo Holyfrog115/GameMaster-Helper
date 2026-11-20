@@ -1,48 +1,68 @@
 #pragma once
-#include "attributes.hpp"
+#include "basecreature.hpp"
+#include <iostream>
 #include <string>
 
-class PlayerCharacter
+class Party;
+
+class PlayerCharacter final : public BaseCreature
 {
 private:
-    std::string m_name;
     int m_level;
-    int m_currentHp;
-    int m_maxHp;
-    Attributes m_attributes;
+    int m_successfulSavingThrows = 0;
+    int m_failedSavingThrows     = 0;
+    bool m_isDead                = false;
+    std::string m_class;
 
 public:
     PlayerCharacter(int str, int dex, int con, int intelligence, int wis, int cha, const std::string& name, int level,
-                    int maxHp);
-    ~PlayerCharacter();
+                    int maxHp, const std::string& characterClass);
+    PlayerCharacter();
+    PlayerCharacter(const PlayerCharacter& other);
+    PlayerCharacter(PlayerCharacter&& other) noexcept = default;
+    PlayerCharacter& operator=(const PlayerCharacter& other);
+    PlayerCharacter& operator=(PlayerCharacter&& other) noexcept = default;
+    ~PlayerCharacter() override;
 
-    std::string GetName() const;
-    int GetLevel() const;
-    int GetCurrentHp() const;
-    int GetMaxHp() const;
-    int GetStrength() const;
-    int GetDexterity() const;
-    int GetConstitution() const;
-    int GetIntelligence() const;
-    int GetWisdom() const;
-    int GetCharisma() const;
+    std::unique_ptr<BaseCreature> Clone() const override;
 
-    void SetName(const std::string& name);
-    void SetLevel(int level);
-    void SetCurrentHp(int currentHp);
-    void SetMaxHp(int maxHp);
-    void SetStrength(int strength);
-    void SetDexterity(int dexterity);
-    void SetConstitution(int constitution);
-    void SetIntelligence(int intelligence);
-    void SetWisdom(int wisdom);
-    void SetCharisma(int charisma);
+    int GetLevel() const
+    {
+        return m_level;
+    }
+    bool IsDead() const
+    {
+        return m_isDead;
+    }
+    std::string GetClass() const
+    {
+        return m_class;
+    }
 
-    void TakeDamage(int damage);
-    void Heal(int heal);
+    void SetLevel(int level)
+    {
+        if (level < 1)
+        {
+            std::cout << "Ошибка. Неположительный уровень персонажа.\n";
+        }
+        else if (level > 20)
+        {
+            std::cout << "Ошибка. Уровень персонажа > 20.\n";
+        }
+        else
+        {
+            m_level = level;
+        }
+    }
+
+    void SetClass(std::string characterClass)
+    {
+        m_class = characterClass;
+    }
+
     void LevelUp();
-    int RollInitiative() const;
-    int CalculateModifier(const std::string& attribute) const;
     int CalculateCarryingCapacity() const;
-    void PrintInfo() const;
+    void PrintInfo() const override;
+    void TakeTurn() override;
+    void LeaveParty(Party& party);
 };
