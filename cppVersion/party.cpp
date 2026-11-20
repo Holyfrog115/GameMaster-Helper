@@ -127,3 +127,39 @@ bool Party::SearchCharacter(const std::string& name) const
 
     return false;
 }
+
+void Party::DistributeReward(const Ilootable& source) const
+{
+    std::cout << source.GetLootDescription();
+
+    if (m_members.empty())
+    {
+        std::cout << "В группе нет участников для распределения награды.\n";
+        return;
+    }
+
+    int xpPerMember   = source.GetXpReward() / static_cast<int>(m_members.size());
+    int goldPerMember = source.GetGoldReward() / static_cast<int>(m_members.size());
+
+    std::cout << "Каждому участнику: +" << xpPerMember << " опыта, " << goldPerMember << " золота.\n";
+}
+
+void Party::DistributeReward(const std::vector<const Ilootable*>& sources) const
+{
+    int totalXp   = 0;
+    int totalGold = 0;
+    for (const Ilootable* source : sources)
+    {
+        if (source != nullptr)
+        {
+            std::cout << source->GetLootDescription();
+            totalXp += source->GetXpReward();
+            totalGold += source->GetGoldReward();
+        }
+    }
+
+    int xpPerMember   = totalXp / static_cast<int>(m_members.size());
+    int goldPerMember = totalGold / static_cast<int>(m_members.size());
+
+    std::cout << "Каждому участнику: +" << xpPerMember << " опыта, " << goldPerMember << " золота.\n";
+}

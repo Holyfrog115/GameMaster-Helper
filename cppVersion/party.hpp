@@ -1,4 +1,5 @@
 #pragma once
+#include "ilootable.hpp"
 #include "playercharacter.hpp"
 #include <memory>
 #include <vector>
@@ -22,4 +23,6 @@ public:
     void PrintParty() const;
     bool SearchCharacter(const std::string& name) const;
     bool SearchCharacterByFullName(const std::string& name) const;
+    void DistributeReward(const Ilootable& source) const;
+    void DistributeReward(const std::vector<const Ilootable*>& sources) const;
 };
