@@ -80,6 +80,6 @@ void EnemyCreature::TakeTurn()
 
 std::string EnemyCreature::GetLootDescription() const
 {
-    return "Награды из " + GetName() + "\n" + " - " + std::to_string(GetGoldReward()) + " золота\n" + " - " +
-           std::to_string(GetXpReward()) + " опыта\n";
+    return "Награды за победу над " + GetName() + ":\n" + " - " + std::to_string(GetGoldReward()) + " золота\n" +
+           " - " + std::to_string(GetXpReward()) + " опыта\n";
 }
