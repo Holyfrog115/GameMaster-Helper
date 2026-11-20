@@ -214,6 +214,16 @@ int main()
         std::cout << "\n";
     }
 
+    // Раннее и позднее связывание
+    std::cout << "Раннее и позднее связывание:\n";
+    std::unique_ptr<BaseCreature> hero =
+        std::make_unique<PlayerCharacter>(12, 14, 13, 10, 11, 16, "Богдан Милорад Тихоншвили", 3, 24, "Колдун");
+
+    std::cout << "\nВызов через указатель на BaseCreature невиртуального метода:\n";
+    hero->PrintCategory();
+    std::cout << "Вызов через указатель на BaseCreature виртуального метода:\n";
+    hero->TakeTurn();
+
     std::cout << "\n";
 
     return 0;
