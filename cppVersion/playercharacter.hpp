@@ -63,5 +63,6 @@ public:
     void TakeTurn() override;
     void LeaveParty(Party& party);
     void PrintCategory() const;
+    void TakeDamage(int damage) override;
     void Heal(int heal) override;
 };

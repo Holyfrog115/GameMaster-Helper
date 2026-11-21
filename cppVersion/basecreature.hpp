@@ -130,7 +130,7 @@ public:
         m_attributes->SetCharisma(charisma);
     }
 
-    void TakeDamage(int damage);
+    virtual void TakeDamage(int damage);
     virtual void Heal(int heal);
     int RollInitiative() const;
     int CalculateModifier(const std::string& attribute) const;
