@@ -198,6 +198,7 @@ int main()
     TreasureChest chest("Древний сундук", 120, 20);
     Party party({character1, character2, character3});
 
+    std::cout << "\nРабота интерфейса Ilootable:\n";
     std::vector<const Ilootable*> lootSources = {&goblin, &chest};
     for (const Ilootable* source : lootSources)
     {
@@ -214,6 +215,7 @@ int main()
     hero->PrintCategory();
     std::cout << "Вызов через указатель на BaseCreature виртуального метода:\n";
     hero->TakeTurn();
+    std::cout << "\n";
 
     // Проверка типа во время выполнения
     std::vector<std::unique_ptr<BaseCreature>> battlefield;
@@ -236,7 +238,7 @@ int main()
     }
 
     // Конфигурирование
-    std::cout << "Конфигурирование:\n";
+    std::cout << "\nКонфигурирование:\n";
     PlayerCharacter barbarian(16, 12, 16, 8, 10, 10, "Грог", 5, 60, "Варвар");
 
     barbarian.TakeDamage(15);
