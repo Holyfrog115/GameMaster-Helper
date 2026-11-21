@@ -48,7 +48,7 @@ void Party::AddCharacter(const std::vector<std::shared_ptr<PlayerCharacter>>& ch
 
 void Party::RemoveCharacter(size_t index)
 {
-    if (index == 0 || (index - 1) > m_members.size())
+    if (index == 0 || (index - 1) >= m_members.size())
     {
         throw std::out_of_range("Некорректный номер участника группы.");
     }
