@@ -1,4 +1,5 @@
 #include "party.hpp"
+#include "exceptions.hpp"
 #include "playercharacter.hpp"
 #include <algorithm>
 #include <iostream>
@@ -130,8 +131,7 @@ void Party::DistributeReward(const Ilootable& source) const
 
     if (m_members.empty())
     {
-        std::cout << "В группе нет участников для распределения награды.\n";
-        return;
+        throw GameRuleException("Невозможно распределить награду: в группе нет участников.");
     }
 
     int xpPerMember   = source.GetXpReward() / static_cast<int>(m_members.size());
@@ -142,6 +142,11 @@ void Party::DistributeReward(const Ilootable& source) const
 
 void Party::DistributeReward(const std::vector<const Ilootable*>& sources) const
 {
+    if (m_members.empty())
+    {
+        throw GameRuleException("Невозможно распределить награду: в группе нет участников.");
+    }
+
     int totalXp   = 0;
     int totalGold = 0;
     for (const Ilootable* source : sources)
