@@ -19,7 +19,7 @@ public:
     EnemyCreature(EnemyCreature&& other) noexcept            = default;
     EnemyCreature& operator=(const EnemyCreature& other)     = default;
     EnemyCreature& operator=(EnemyCreature&& other) noexcept = default;
-    ~EnemyCreature() override;
+    ~EnemyCreature() noexcept override;
 
     std::unique_ptr<BaseCreature> Clone() const override;
 

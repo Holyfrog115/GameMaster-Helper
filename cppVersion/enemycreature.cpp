@@ -35,7 +35,7 @@ EnemyCreature::EnemyCreature()
 {
 }
 
-EnemyCreature::~EnemyCreature()
+EnemyCreature::~EnemyCreature() noexcept
 {
     std::cout << "~EnemyCreature() -> Объект уничтожен.\n";
 }

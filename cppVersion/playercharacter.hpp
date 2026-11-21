@@ -23,7 +23,7 @@ public:
     PlayerCharacter(PlayerCharacter&& other) noexcept = default;
     PlayerCharacter& operator=(const PlayerCharacter& other);
     PlayerCharacter& operator=(PlayerCharacter&& other) noexcept = default;
-    ~PlayerCharacter() override;
+    ~PlayerCharacter() noexcept override;
 
     std::unique_ptr<BaseCreature> Clone() const override;
 

@@ -68,7 +68,7 @@ BaseCreature& BaseCreature::operator=(const BaseCreature& other)
     return *this;
 }
 
-BaseCreature::~BaseCreature()
+BaseCreature::~BaseCreature() noexcept
 {
     --s_creatureCount;
     std::cout << "~BaseCreature() -> Объект уничтожен\n";

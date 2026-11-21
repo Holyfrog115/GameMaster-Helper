@@ -16,7 +16,7 @@ Attributes::Attributes(int strength, int dexterity, int constitution, int intell
     std::cout << "Объект класса Attributes был создан\n";
 }
 
-Attributes::~Attributes()
+Attributes::~Attributes() noexcept
 {
     std::cout << "Объект класса Attributes был удален\n";
 }

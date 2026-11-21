@@ -59,7 +59,7 @@ PlayerCharacter& PlayerCharacter::operator=(const PlayerCharacter& other)
     return *this;
 }
 
-PlayerCharacter::~PlayerCharacter()
+PlayerCharacter::~PlayerCharacter() noexcept
 {
     std::cout << "~PlayerCharacter() -> Объект уничтожен (" << GetName() << ")\n";
 }

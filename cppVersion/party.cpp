@@ -22,7 +22,7 @@ Party::Party(const std::vector<std::shared_ptr<PlayerCharacter>>& characters)
     std::cout << "Объект класса Party был создан.\n";
 }
 
-Party::~Party()
+Party::~Party() noexcept
 {
     std::cout << "Объект класса Party был удален.\n";
 }
