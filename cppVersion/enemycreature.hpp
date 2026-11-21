@@ -1,5 +1,6 @@
 #pragma once
 #include "basecreature.hpp"
+#include "exceptions.hpp"
 #include "ilootable.hpp"
 #include <iostream>
 #include <string>

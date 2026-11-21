@@ -1,5 +1,6 @@
 #pragma once
 #include "attributes.hpp"
+#include "exceptions.hpp"
 #include "idamagepolicy.hpp"
 #include <memory>
 #include <string>
