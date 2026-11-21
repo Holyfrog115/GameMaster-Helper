@@ -1,5 +1,6 @@
 #include "attributes.hpp"
 #include "enemycreature.hpp"
+#include "exceptions.hpp"
 #include "idamagepolicy.hpp"
 #include "ilootable.hpp"
 #include "party.hpp"
@@ -59,19 +60,6 @@ int main()
     }
     std::cout << "После удаления объекта Party персонажи все еще доступны. Имя объекта char1: " << character1->GetName()
               << "\n";
-
-    // Примеры работы проверок правил
-    std::cout << "\n--- ПРИМЕРЫ РАБОТЫ ПРОВЕРОК ПРАВИЛ ---\n";
-    std::cout << "Установление отрицательного значения характеристики:\n";
-    character1->SetCharisma(-1);
-    std::cout << "Установление значения характеристики > 20:\n";
-    character1->SetCharisma(30);
-    std::cout << "Попытка повысить уровень выше 20:\n";
-    character1->SetLevel(18);
-    for (int i = 0; i < 3; ++i)
-    {
-        character1->LevelUp();
-    }
 
     // Статическая инициализация объекта
     std::cout << "\n--- СТАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ОБЪЕКТА ---\n";
@@ -263,6 +251,92 @@ int main()
     barbarian.SetDamagePolicy(std::make_unique<VulnerabilityDamagePolicy>());
     barbarian.TakeDamage(15);
     std::cout << "Текущее HP: " << barbarian.GetCurrentHp() << "\n";
+
+    // Исключения
+    std::cout << "\nИсключения:\n";
+
+    PlayerCharacter testHero(14, 12, 14, 10, 10, 12, "Грог", 19, 45, "Воин");
+
+    // 1. Успешное действие
+    try
+    {
+        testHero.LevelUp();
+        testHero.TakeDamage(10);
+        testHero.Heal(5);
+        std::cout << "Успешно: уровень " << testHero.GetLevel() << ", HP " << testHero.GetCurrentHp() << "\n";
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "Неожиданная ошибка: " << e.what() << "\n";
+    }
+
+    // Перехват нарушений правил
+    std::cout << "\nПовышение уровня выше 20:\n";
+    try
+    {
+        testHero.LevelUp();
+    }
+    catch (const GameRuleException& e)
+    {
+        std::cout << "GameRuleException: " << e.what() << "\n";
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "Exception: " << e.what() << "\n";
+    }
+
+    std::cout << "\nУстановка показателя силы = 25:\n";
+    try
+    {
+        testHero.SetStrength(25);
+    }
+    catch (const InvalidStatException& e)
+    {
+        std::cout << "InvalidStatException: " << e.what() << "\n";
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "Exception: " << e.what() << "\n";
+    }
+
+    std::cout << "\nОтрицательный урон:\n";
+    try
+    {
+        testHero.TakeDamage(-1);
+    }
+    catch (const InvalidStatException& e)
+    {
+        std::cout << "InvalidStatException: " << e.what() << "\n";
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "Exception: " << e.what() << "\n";
+    }
+
+    std::cout << "\n";
+
+    while (!testHero.IsDead())
+    {
+        testHero.TakeDamage(1000);
+        testHero.TakeDamage(1000);
+        testHero.TakeDamage(1000);
+        testHero.TakeDamage(1000);
+        testHero.TakeTurn();
+    }
+
+    std::cout << "\nПопытка исцелить мертвого персонажа:\n";
+    try
+    {
+        testHero.Heal(1);
+    }
+    catch (const DeadCreatureException& e)
+    {
+        std::cout << "DeadCreatureException: " << e.what() << "\n";
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "Exception: " << e.what() << "\n";
+    }
 
     std::cout << "\n";
 
