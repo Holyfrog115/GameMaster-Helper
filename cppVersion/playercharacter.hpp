@@ -1,5 +1,6 @@
 #pragma once
 #include "basecreature.hpp"
+#include "exceptions.hpp"
 #include <iostream>
 #include <string>
 
@@ -41,13 +42,9 @@ public:
 
     void SetLevel(int level)
     {
-        if (level < 1)
+        if (level < 1 || level > 20)
         {
-            std::cout << "Ошибка. Неположительный уровень персонажа.\n";
-        }
-        else if (level > 20)
-        {
-            std::cout << "Ошибка. Уровень персонажа > 20.\n";
+            throw InvalidStatException("Уровень персонажа должен быть от 1 до 20.");
         }
         else
         {
@@ -66,4 +63,5 @@ public:
     void TakeTurn() override;
     void LeaveParty(Party& party);
     void PrintCategory() const;
+    void Heal(int heal) override;
 };

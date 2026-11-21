@@ -1,4 +1,5 @@
 #include "basecreature.hpp"
+#include "exceptions.hpp"
 #include "normaldp.hpp"
 #include "utility.hpp"
 #include <iostream>
@@ -12,8 +13,7 @@ BaseCreature::BaseCreature(const std::string& name, int maxHp, int strength, int
 {
     if (maxHp < 1)
     {
-        std::cout << "Ошибка. Неположительное значение максимального здоровья. Установлено значение - 1\n";
-        m_maxHp = 1;
+        throw InvalidStatException("Максимальное здоровье должно быть >= 1.");
     }
     else
     {
@@ -78,8 +78,7 @@ void BaseCreature::TakeDamage(int damage)
 {
     if (damage < 0)
     {
-        std::cout << "Ошибка. Значение урона должно быть положительным.\n";
-        return;
+        throw InvalidStatException("Значение урона не может быть отрицательным.");
     }
 
     int actualDamage = m_damagePolicy->ModifyDamage(damage);
@@ -107,8 +106,7 @@ void BaseCreature::Heal(int heal)
 {
     if (heal < 0)
     {
-        std::cout << "Ошибка. Значение исцеления должно быть положительным.\n";
-        return;
+        throw InvalidStatException("Значение исцеления не может быть отрицательным.");
     }
     if (m_currentHp + heal > m_maxHp)
     {

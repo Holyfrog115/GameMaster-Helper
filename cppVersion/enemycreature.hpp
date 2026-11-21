@@ -37,8 +37,7 @@ public:
     {
         if (challengeRating < 0)
         {
-            std::cout << "Ошибка. Уровень опасности существа не может быть < 0\n";
-            return;
+            throw InvalidStatException("Уровень опасности существа не может быть < 0.");
         }
         m_challengeRating = challengeRating;
     }
@@ -47,8 +46,7 @@ public:
     {
         if (xpReward < 0)
         {
-            std::cout << "Ошибка. Количество опыта за победу над существом не может быть < 0\n";
-            return;
+            throw InvalidStatException("Количество опыта за победу над существом не может быть < 0.");
         }
         m_xpReward = xpReward;
     }

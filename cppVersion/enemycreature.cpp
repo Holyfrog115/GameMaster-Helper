@@ -1,5 +1,6 @@
 #include "enemycreature.hpp"
 #include "attributes.hpp"
+#include "exceptions.hpp"
 #include <iostream>
 #include <string>
 
@@ -10,8 +11,7 @@ EnemyCreature::EnemyCreature(int str, int dex, int con, int intelligence, int wi
 {
     if (challengeRating < 0)
     {
-        std::cout << "Ошибка. Уровень опасности существа не может быть < 0. Установлено значение 0.\n";
-        m_challengeRating = 0;
+        throw InvalidStatException("Уровень опасности существа не может быть < 0.");
     }
     else
     {
@@ -20,8 +20,7 @@ EnemyCreature::EnemyCreature(int str, int dex, int con, int intelligence, int wi
 
     if (xpReward < 0)
     {
-        std::cout << "Ошибка. Количество опыта за победу над существом не может быть < 0. Установлено значение 0.\n";
-        m_xpReward = 0;
+        throw InvalidStatException("Количество опыта за победу над существом не может быть < 0.");
     }
     else
     {

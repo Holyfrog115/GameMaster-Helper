@@ -93,7 +93,7 @@ public:
     {
         if (hp < 1)
         {
-            m_maxHp = 1;
+            throw InvalidStatException("Максимальное здоровье должно быть >= 1.");
         }
         else
         {
@@ -130,7 +130,7 @@ public:
     }
 
     void TakeDamage(int damage);
-    void Heal(int heal);
+    virtual void Heal(int heal);
     int RollInitiative() const;
     int CalculateModifier(const std::string& attribute) const;
     virtual void PrintInfo() const;

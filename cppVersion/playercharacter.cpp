@@ -1,5 +1,6 @@
 #include "playercharacter.hpp"
 #include "attributes.hpp"
+#include "exceptions.hpp"
 #include "party.hpp"
 #include "utility.hpp"
 #include <iostream>
@@ -11,15 +12,9 @@ PlayerCharacter::PlayerCharacter(int str, int dex, int con, int intelligence, in
     : BaseCreature{name, maxHp, str, dex, con, intelligence, wis, cha}
     , m_class{characterClass}
 {
-    if (level < 1)
+    if (level < 1 || level > 20)
     {
-        std::cout << "Ошибка. Неположительный уровень персонажа. Установлен 1 уровень.\n";
-        m_level = 1;
-    }
-    else if (level > 20)
-    {
-        std::cout << "Ошибка. Уровень персонажа > 20. Установлен 20 уровень.\n";
-        m_level = 20;
+        throw InvalidStatException("Уровень персонажа должен быть от 1 до 20.");
     }
     else
     {
@@ -83,7 +78,7 @@ void PlayerCharacter::LevelUp()
     }
     else
     {
-        std::cout << "Невозможно повысить уровень. Достигнут максимальный уровень (20).\n";
+        throw GameRuleException("Достигнут максимальный уровень персонажа (20).");
     }
 }
 
@@ -150,4 +145,13 @@ void PlayerCharacter::TakeTurn()
 void PlayerCharacter::PrintCategory() const
 {
     std::cout << "Категория: Персонаж игрока (" << m_class << ")\n";
+}
+
+void PlayerCharacter::Heal(int heal)
+{
+    if (m_isDead)
+    {
+        throw DeadCreatureException(GetName());
+    }
+    BaseCreature::Heal(heal);
 }
