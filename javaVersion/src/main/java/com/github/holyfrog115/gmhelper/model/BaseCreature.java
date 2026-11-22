@@ -2,7 +2,9 @@ package com.github.holyfrog115.gmhelper.model;
 import com.github.holyfrog115.gmhelper.exception.InvalidStatException;
 import com.github.holyfrog115.gmhelper.utils.DiceUtils;
 
-public abstract class BaseCreature {
+import java.util.concurrent.CompletionService;
+
+public abstract class BaseCreature implements Comparable<BaseCreature> {
     private String name;
     private int currentHp;
     private int maxHp;
@@ -188,5 +190,10 @@ public abstract class BaseCreature {
         if (policy != null) {
             this.damagePolicy = policy;
         }
+    }
+
+    @Override
+    public int compareTo(BaseCreature other) {
+        return this.name.compareTo(other.name);
     }
 }
