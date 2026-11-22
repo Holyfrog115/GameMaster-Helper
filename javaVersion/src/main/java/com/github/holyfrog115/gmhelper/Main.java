@@ -1,13 +1,14 @@
 package com.github.holyfrog115.gmhelper;
 
-import com.github.holyfrog115.gmhelper.model.Party;
-import com.github.holyfrog115.gmhelper.model.PlayerCharacter;
-import com.github.holyfrog115.gmhelper.model.BaseCreature;
-import com.github.holyfrog115.gmhelper.model.EnemyCreature;
+import com.github.holyfrog115.gmhelper.exception.DeadCreatureException;
+import com.github.holyfrog115.gmhelper.exception.GameRuleException;
+import com.github.holyfrog115.gmhelper.exception.InvalidStatException;
+import com.github.holyfrog115.gmhelper.model.*;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Main {
@@ -41,18 +42,6 @@ public class Main {
             System.out.println("Средний уровень группы: " + party.calcAvgLevel());
         }
         System.out.println("Группа удалена, но персонажи существуют независимо. Имя первого: " + character1.getName());
-
-        // ПРОВЕРКА ПРАВИЛ ПРЕДМЕТНОЙ ОБЛАСТИ
-        System.out.println("\n--- ПРОВЕРКА ПРАВИЛ ПРЕДМЕТНОЙ ОБЛАСТИ ---");
-        System.out.println("Попытка установить отрицательную харизму (-1):");
-        character1.setCharisma(-1);
-        System.out.println("Попытка установить харизму выше максимума (30):");
-        character1.setCharisma(30);
-        System.out.println("Попытка повысить уровень выше 20:");
-        character1.setLevel(18);
-        for (int i = 0; i < 3; ++i) {
-            character1.levelUp();
-        }
 
         // Ссылки и копии
         System.out.println("\n--- ССЫЛКИ И КОПИИ ---");
@@ -133,6 +122,133 @@ public class Main {
 
             member.leaveParty(party);
             System.out.println(party);
+        }
+
+        System.out.println("\n--- ДЕМОНСТРАЦИОННАЯ ПРОГРАММА ЛР 5 ---");
+        EnemyCreature goblin = new EnemyCreature(10, 14, 10, 8, 8, 6, "Гоблин", 7, 0.25, 50, "Гуманоид");
+        TreasureChest chest = new TreasureChest("Древний сундук", 120, 20);
+        Party lab5Party = new Party(List.of(character1, character2, character3));
+
+        System.out.println("\nРабота интерфейса Lootable:");
+        List<Lootable> lootSources = List.of(goblin, chest);
+        for (Lootable source : lootSources) {
+            lab5Party.distributeReward(source);
+            System.out.println();
+        }
+
+        // Раннее и позднее связывание
+        System.out.println("Раннее и позднее связывание:");
+        BaseCreature hero = new PlayerCharacter(
+                12, 14, 13, 10, 11, 16, "Богдан Милорад Тихоншвили", 3, 24, "Колдун");
+
+        System.out.println("\nВызов через ссылку BaseCreature static-метода (раннее связывание):");
+        hero.printCategory();
+        System.out.println("Вызов через ссылку BaseCreature переопределенного метода (позднее связывание):");
+        hero.takeTurn();
+        System.out.println();
+
+        // Проверка типа во время выполнения
+        List<BaseCreature> battlefield = new ArrayList<>();
+        battlefield.add(new PlayerCharacter(
+                12, 14, 13, 10, 11, 16, "Богдан Милорад Тихоншвили", 3, 24, "Колдун"));
+        battlefield.add(new EnemyCreature(10, 14, 10, 8, 8, 6, "Гоблин", 7, 0.25, 50, "Гуманоид"));
+        battlefield.add(new EnemyCreature(16, 12, 16, 7, 11, 10, "Орк", 15, 0.5, 100, "Гуманоид"));
+
+        System.out.println("\nПроверка типа во время выполнения (instanceof):");
+        for (BaseCreature creature : battlefield) {
+            if (creature instanceof Lootable lootable) {
+                lab5Party.distributeReward(lootable);
+            } else {
+                System.out.println(creature.getName() + " не реализует Lootable. Добычи нет.");
+            }
+        }
+
+        // Стандартный интерфейс Comparable - сортировка существ по имени
+        System.out.println("\nСортировка существ по имени (Comparable):");
+        Collections.sort(battlefield);
+        for (BaseCreature creature : battlefield) {
+            System.out.println(" - " + creature.getName());
+        }
+
+        // Конфигурирование (Strategy)
+        System.out.println("\nКонфигурирование:");
+        PlayerCharacter barbarian = new PlayerCharacter(16, 12, 16, 8, 10, 10, "Грог", 5, 60, "Варвар");
+
+        barbarian.takeDamage(15);
+        System.out.println("Текущее HP: " + barbarian.getCurrentHp());
+
+        // Динамическая смена поведения
+        barbarian.setDamagePolicy(new ResistanceDamagePolicy());
+        barbarian.takeDamage(15);
+        System.out.println("Текущее HP: " + barbarian.getCurrentHp());
+
+        // Динамическая смена поведения
+        barbarian.setDamagePolicy(new VulnerabilityDamagePolicy());
+        barbarian.takeDamage(15);
+        System.out.println("Текущее HP: " + barbarian.getCurrentHp());
+
+        // Исключения
+        System.out.println("\nИсключения:");
+        try (PlayerCharacter testHero = new PlayerCharacter(14, 12, 14, 10, 10, 12, "Грог", 19, 45, "Воин")) {
+
+            // 1. Успешное действие
+            try {
+                testHero.levelUp();
+                testHero.takeDamage(10);
+                testHero.heal(5);
+                System.out.println("Успешно: уровень " + testHero.getLevel() + ", HP " + testHero.getCurrentHp());
+            } catch (Exception e) {
+                System.out.println("Неожиданная ошибка: " + e.getMessage());
+            }
+
+            // Перехват нарушений правил
+            System.out.println("\nПовышение уровня выше 20:");
+            try {
+                testHero.levelUp();
+            } catch (GameRuleException e) {
+                System.out.println("GameRuleException: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Exception: " + e.getMessage());
+            }
+
+            System.out.println("\nУстановка показателя силы = 25:");
+            try {
+                testHero.setStrength(25);
+            } catch (InvalidStatException e) {
+                System.out.println("InvalidStatException: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Exception: " + e.getMessage());
+            }
+
+            System.out.println("\nОтрицательный урон:");
+            try {
+                testHero.takeDamage(-1);
+            } catch (InvalidStatException e) {
+                System.out.println("InvalidStatException: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Exception: " + e.getMessage());
+            }
+
+            System.out.println();
+
+            while (!testHero.isDead()) {
+                testHero.takeDamage(1000);
+                testHero.takeDamage(1000);
+                testHero.takeDamage(1000);
+                testHero.takeDamage(1000);
+                testHero.takeTurn();
+            }
+
+            System.out.println("\nПопытка исцелить мертвого персонажа:");
+            try {
+                testHero.heal(1);
+            } catch (DeadCreatureException e) {
+                System.out.println("DeadCreatureException: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Exception: " + e.getMessage());
+            } finally {
+                System.out.println("Блок finally выполнен независимо от исхода.");
+            }
         }
     }
 }
