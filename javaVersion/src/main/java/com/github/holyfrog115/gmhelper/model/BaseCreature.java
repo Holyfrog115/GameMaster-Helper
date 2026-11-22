@@ -1,10 +1,14 @@
 package com.github.holyfrog115.gmhelper.model;
+import com.github.holyfrog115.gmhelper.exception.InvalidStatException;
 import com.github.holyfrog115.gmhelper.utils.DiceUtils;
 
-public abstract class BaseCreature {
+import java.util.concurrent.CompletionService;
+
+public abstract class BaseCreature implements Comparable<BaseCreature> {
     private String name;
     private int currentHp;
     private int maxHp;
+    private DamagePolicy damagePolicy = new NormalDamagePolicy();
     private static int creatureCount = 0;
 
     protected Attributes attributes;
@@ -15,11 +19,9 @@ public abstract class BaseCreature {
         this.attributes = new Attributes(strength, dexterity, constitution, intelligence, wisdom, charisma);
 
         if (maxHp < 1) {
-            System.out.println("Ошибка. Неположительное значение максимального здоровья. Установлено значение - 1");
-            this.maxHp = 1;
-        } else {
-            this.maxHp = maxHp;
+            throw new InvalidStatException("Максимальное здоровье должно быть >= 1.");
         }
+        this.maxHp = maxHp;
         this.currentHp = this.maxHp;
         creatureCount++;
 
@@ -35,6 +37,7 @@ public abstract class BaseCreature {
         this.currentHp = other.getCurrentHp();
         this.maxHp = other.getMaxHp();
         this.attributes = other.attributes;
+        this.damagePolicy = other.damagePolicy;
         creatureCount++;
 
         System.out.println("BaseCreature(const BaseCreature& other) -> объект скопирован");
@@ -101,10 +104,9 @@ public abstract class BaseCreature {
 
     public void setMaxHp(int hp) {
         if (hp < 1) {
-            this.maxHp = 1;
-        } else {
-            this.maxHp = hp;
+            throw new InvalidStatException("Максимальное здоровье должно быть >= 1.");
         }
+        this.maxHp = hp;
         if (this.currentHp > this.maxHp) {
             this.currentHp = this.maxHp;
         }
@@ -136,20 +138,22 @@ public abstract class BaseCreature {
 
     public void takeDamage(int damage) {
         if (damage < 0) {
-            System.out.println("Ошибка. Значение урона должно быть положительным.");
-            return;
+            throw new InvalidStatException("Значение урона не может быть отрицательным.");
         }
-        if (currentHp - damage < 0) {
+
+        int actualDamage = damagePolicy.modifyDamage(damage);
+        System.out.println(name + " получает " + actualDamage + " урона (базовый: " + damage
+                + ", правило: " + damagePolicy.getPolicyName() + ")");
+        if (currentHp - actualDamage < 0) {
             currentHp = 0;
         } else {
-            currentHp -= damage;
+            currentHp -= actualDamage;
         }
     }
 
     public void heal(int heal) {
         if (heal < 0) {
-            System.out.println("Ошибка. Значение исцеления должно быть положительным.");
-            return;
+            throw new InvalidStatException("Значение исцеления не может быть отрицательным.");
         }
         if (currentHp + heal > maxHp) {
             currentHp = maxHp;
@@ -176,5 +180,20 @@ public abstract class BaseCreature {
              - Имя персонажа: %s
              - Максимальное здоровье: %d
              - Текущее здоровье: %d""".formatted(displayName, getMaxHp(), getCurrentHp());
+    }
+
+    public static void printCategory() {
+        System.out.println("Категория: Базовое существо");
+    }
+
+    public void setDamagePolicy(DamagePolicy policy) {
+        if (policy != null) {
+            this.damagePolicy = policy;
+        }
+    }
+
+    @Override
+    public int compareTo(BaseCreature other) {
+        return this.name.compareTo(other.name);
     }
 }

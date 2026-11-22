@@ -1,6 +1,8 @@
 package com.github.holyfrog115.gmhelper.model;
 
-public class EnemyCreature extends BaseCreature {
+import com.github.holyfrog115.gmhelper.exception.InvalidStatException;
+
+public class EnemyCreature extends BaseCreature implements Lootable {
     private double challengeRating;
     private int xpReward;
     private String type;
@@ -11,18 +13,14 @@ public class EnemyCreature extends BaseCreature {
         this.type = type;
 
         if (challengeRating < 0) {
-            System.out.println("Ошибка. Уровень опасности существа не может быть < 0. Установлено значение 0.");
-            this.challengeRating = 0;
-        } else {
-            this.challengeRating = challengeRating;
+            throw new InvalidStatException("Уровень опасности существа не может быть < 0.");
         }
+        this.challengeRating = challengeRating;
 
         if (xpReward < 0) {
-            System.out.println("Ошибка. Количество опыта за победу над существом не может быть < 0. Установлено значение 0.");
-            this.xpReward = 0;
-        } else {
-            this.xpReward = xpReward;
+            throw new InvalidStatException("Количество опыта за победу над существом не может быть < 0.");
         }
+        this.xpReward = xpReward;
 
         System.out.println("EnemyCreature() -> Объект создан");
     }
@@ -47,26 +45,20 @@ public class EnemyCreature extends BaseCreature {
         return challengeRating;
     }
 
-    public int getXpReward() {
-        return xpReward;
-    }
-
     public String getType() {
         return type;
     }
 
     public void setChallengeRating(double challengeRating) {
         if (challengeRating < 0) {
-            System.out.println("Ошибка. Уровень опасности существа не может быть < 0");
-            return;
+            throw new InvalidStatException("Уровень опасности существа не может быть < 0.");
         }
         this.challengeRating = challengeRating;
     }
 
     public void setXpReward(int xpReward) {
         if (xpReward < 0) {
-            System.out.println("Ошибка. Количество опыта за победу над существом не может быть < 0");
-            return;
+            throw new InvalidStatException("Количество опыта за победу над существом не может быть < 0.");
         }
         this.xpReward = xpReward;
     }
@@ -110,5 +102,24 @@ public class EnemyCreature extends BaseCreature {
             // Совершает ход
             System.out.println(getName() + " совершает атаку.");
         }
+    }
+
+    @Override
+    public int getXpReward() {
+        return xpReward;
+    }
+
+    @Override
+    public int getGoldReward() {
+        return (int) (challengeRating * 20);
+    }
+
+    @Override
+    public String getLootDescription() {
+        return """
+                 Награды за победу над %s:
+                 - %d золота
+                 - %d опыта
+                """.formatted(getName(), getGoldReward(), getXpReward());
     }
 }

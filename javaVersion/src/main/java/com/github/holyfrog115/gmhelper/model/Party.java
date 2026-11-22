@@ -1,5 +1,7 @@
 package com.github.holyfrog115.gmhelper.model;
 
+import com.github.holyfrog115.gmhelper.exception.GameRuleException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,14 +38,10 @@ public class Party {
     }
 
     public void removeCharacter(int index) {
-        if (index <= 0) {
-            return;
+        if (index <= 0 || (index - 1) >= members.size()) {
+            throw new IndexOutOfBoundsException("Некорректный номер участника группы.");
         }
-        index--;
-
-        if (index < members.size()) {
-            members.remove(index);
-        }
+        members.remove(index - 1);
     }
 
     public void removeCharacter(PlayerCharacter character) {
@@ -105,5 +103,45 @@ public class Party {
                     .append(name);
         }
         return sb.toString();
+    }
+
+    public void distributeReward(Lootable source) {
+        if (source == null) {
+            return;
+        }
+        if (members.isEmpty()) {
+            throw new GameRuleException("Невозможно распределить награду: в группе нет участников.");
+        }
+
+        System.out.print(source.getLootDescription());
+
+        int xpPerMember = source.getXpReward() / members.size();
+        int goldPerMember = source.getGoldReward() / members.size();
+
+        System.out.println("Каждому участнику: +" + xpPerMember + " опыта, " + goldPerMember + " золота.");
+    }
+
+    public void distributeReward(List<? extends Lootable> sources) {
+        if (members.isEmpty()) {
+            throw new GameRuleException("Невозможно распределить награду: в группе нет участников.");
+        }
+        if (sources == null) {
+            return;
+        }
+
+        int totalXp = 0;
+        int totalGold = 0;
+        for (Lootable source : sources) {
+            if (source != null) {
+                System.out.print(source.getLootDescription());
+                totalXp += source.getXpReward();
+                totalGold += source.getGoldReward();
+            }
+        }
+
+        int xpPerMember = totalXp / members.size();
+        int goldPerMember = totalGold / members.size();
+
+        System.out.println("Каждому участнику: +" + xpPerMember + " опыта, " + goldPerMember + " золота.");
     }
 }
