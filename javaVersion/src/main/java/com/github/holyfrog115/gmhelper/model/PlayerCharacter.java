@@ -1,4 +1,6 @@
 package com.github.holyfrog115.gmhelper.model;
+import com.github.holyfrog115.gmhelper.exception.DeadCreatureException;
+import com.github.holyfrog115.gmhelper.exception.InvalidStatException;
 import com.github.holyfrog115.gmhelper.utils.DiceUtils;
 import java.util.Objects;
 
@@ -157,5 +159,34 @@ public final class PlayerCharacter extends BaseCreature implements AutoCloseable
 
     public static void printCategory() {
         System.out.println("Категория: Персонаж игрока");
+    }
+
+    @Override
+    public void takeDamage(int damage) {
+        if (isDead) {
+            throw new DeadCreatureException(getName());
+        }
+        if (getCurrentHp() == 0) {
+            if (damage < 0) {
+                throw new InvalidStatException("Значение урона не может быть отрицательным.");
+            }
+            failedSavingThrows++;
+            System.out.println(getName() + " получает урон и увеличивает количество провальных спасбросков ("
+                    + failedSavingThrows + "/3)");
+            if (failedSavingThrows == 3) {
+                isDead = true;
+                System.out.println(getName() + " погиб.");
+            }
+        } else {
+            super.takeDamage(damage);
+        }
+    }
+
+    @Override
+    public void heal(int heal) {
+        if (isDead) {
+            throw new DeadCreatureException(getName());
+        }
+        super.heal(heal);
     }
 }
