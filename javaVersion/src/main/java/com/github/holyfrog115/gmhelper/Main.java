@@ -207,8 +207,6 @@ public class Main {
                 testHero.levelUp();
             } catch (GameRuleException e) {
                 System.out.println("GameRuleException: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Exception: " + e.getMessage());
             }
 
             System.out.println("\nУстановка показателя силы = 25:");
@@ -216,8 +214,6 @@ public class Main {
                 testHero.setStrength(25);
             } catch (InvalidStatException e) {
                 System.out.println("InvalidStatException: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Exception: " + e.getMessage());
             }
 
             System.out.println("\nОтрицательный урон:");
@@ -225,8 +221,6 @@ public class Main {
                 testHero.takeDamage(-1);
             } catch (InvalidStatException e) {
                 System.out.println("InvalidStatException: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Exception: " + e.getMessage());
             }
 
             System.out.println();
@@ -244,8 +238,6 @@ public class Main {
                 testHero.heal(1);
             } catch (DeadCreatureException e) {
                 System.out.println("DeadCreatureException: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Exception: " + e.getMessage());
             } finally {
                 System.out.println("Блок finally выполнен независимо от исхода.");
             }
