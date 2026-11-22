@@ -115,7 +115,7 @@ public class EnemyCreature extends BaseCreature implements Lootable {
 
     @Override
     public int getGoldReward() {
-        return (int) challengeRating * 20;
+        return (int) (challengeRating * 20);
     }
 
     @Override
