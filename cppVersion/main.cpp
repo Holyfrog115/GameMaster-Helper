@@ -282,10 +282,6 @@ int main()
     {
         std::cout << "GameRuleException: " << e.what() << "\n";
     }
-    catch (const std::exception& e)
-    {
-        std::cout << "Exception: " << e.what() << "\n";
-    }
 
     std::cout << "\nУстановка показателя силы = 25:\n";
     try
@@ -296,10 +292,6 @@ int main()
     {
         std::cout << "InvalidStatException: " << e.what() << "\n";
     }
-    catch (const std::exception& e)
-    {
-        std::cout << "Exception: " << e.what() << "\n";
-    }
 
     std::cout << "\nОтрицательный урон:\n";
     try
@@ -309,10 +301,6 @@ int main()
     catch (const InvalidStatException& e)
     {
         std::cout << "InvalidStatException: " << e.what() << "\n";
-    }
-    catch (const std::exception& e)
-    {
-        std::cout << "Exception: " << e.what() << "\n";
     }
 
     std::cout << "\n";
@@ -334,10 +322,6 @@ int main()
     catch (const DeadCreatureException& e)
     {
         std::cout << "DeadCreatureException: " << e.what() << "\n";
-    }
-    catch (const std::exception& e)
-    {
-        std::cout << "Exception: " << e.what() << "\n";
     }
 
     std::cout << "\n";
