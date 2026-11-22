@@ -1,10 +1,12 @@
 package com.github.holyfrog115.gmhelper.model;
+import com.github.holyfrog115.gmhelper.exception.InvalidStatException;
 import com.github.holyfrog115.gmhelper.utils.DiceUtils;
 
 public abstract class BaseCreature {
     private String name;
     private int currentHp;
     private int maxHp;
+    private DamagePolicy damagePolicy = new NormalDamagePolicy();
     private static int creatureCount = 0;
 
     protected Attributes attributes;
@@ -35,6 +37,7 @@ public abstract class BaseCreature {
         this.currentHp = other.getCurrentHp();
         this.maxHp = other.getMaxHp();
         this.attributes = other.attributes;
+        this.damagePolicy = other.damagePolicy;
         creatureCount++;
 
         System.out.println("BaseCreature(const BaseCreature& other) -> объект скопирован");
@@ -136,13 +139,16 @@ public abstract class BaseCreature {
 
     public void takeDamage(int damage) {
         if (damage < 0) {
-            System.out.println("Ошибка. Значение урона должно быть положительным.");
-            return;
+            throw new InvalidStatException("Значение урона не может быть отрицательным.");
         }
-        if (currentHp - damage < 0) {
+
+        int actualDamage = damagePolicy.modifyDamage(damage);
+        System.out.println(name + " получает " + actualDamage + " урона (базовый: " + damage
+                + ", правило: " + damagePolicy.getPolicyName() + ")");
+        if (currentHp - actualDamage < 0) {
             currentHp = 0;
         } else {
-            currentHp -= damage;
+            currentHp -= actualDamage;
         }
     }
 
@@ -180,5 +186,11 @@ public abstract class BaseCreature {
 
     public static void printCategory() {
         System.out.println("Категория: Базовое существо");
+    }
+
+    public void setDamagePolicy(DamagePolicy policy) {
+        if (policy != null) {
+            this.damagePolicy = policy;
+        }
     }
 }
