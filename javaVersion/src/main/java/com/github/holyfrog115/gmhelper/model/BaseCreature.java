@@ -177,4 +177,8 @@ public abstract class BaseCreature {
              - Максимальное здоровье: %d
              - Текущее здоровье: %d""".formatted(displayName, getMaxHp(), getCurrentHp());
     }
+
+    public static void printCategory() {
+        System.out.println("Категория: Базовое существо");
+    }
 }

@@ -154,4 +154,8 @@ public final class PlayerCharacter extends BaseCreature implements AutoCloseable
     public int hashCode() {
         return Objects.hash(getName(), level, getMaxHp(), characterClass);
     }
+
+    public static void printCategory() {
+        System.out.println("Категория: Персонаж игрока");
+    }
 }
