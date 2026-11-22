@@ -1,5 +1,6 @@
 #pragma once
 #include "basecreature.hpp"
+#include "exceptions.hpp"
 #include <iostream>
 #include <string>
 
@@ -22,7 +23,7 @@ public:
     PlayerCharacter(PlayerCharacter&& other) noexcept = default;
     PlayerCharacter& operator=(const PlayerCharacter& other);
     PlayerCharacter& operator=(PlayerCharacter&& other) noexcept = default;
-    ~PlayerCharacter() override;
+    ~PlayerCharacter() noexcept override;
 
     std::unique_ptr<BaseCreature> Clone() const override;
 
@@ -41,13 +42,9 @@ public:
 
     void SetLevel(int level)
     {
-        if (level < 1)
+        if (level < 1 || level > 20)
         {
-            std::cout << "Ошибка. Неположительный уровень персонажа.\n";
-        }
-        else if (level > 20)
-        {
-            std::cout << "Ошибка. Уровень персонажа > 20.\n";
+            throw InvalidStatException("Уровень персонажа должен быть от 1 до 20.");
         }
         else
         {
@@ -65,4 +62,7 @@ public:
     void PrintInfo() const override;
     void TakeTurn() override;
     void LeaveParty(Party& party);
+    void PrintCategory() const;
+    void TakeDamage(int damage) override;
+    void Heal(int heal) override;
 };

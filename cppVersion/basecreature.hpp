@@ -1,5 +1,7 @@
 #pragma once
 #include "attributes.hpp"
+#include "exceptions.hpp"
+#include "idamagepolicy.hpp"
 #include <memory>
 #include <string>
 
@@ -10,19 +12,20 @@ private:
     int m_currentHp;
     int m_maxHp;
     inline static int s_creatureCount = 0;
+    std::unique_ptr<IDamagePolicy> m_damagePolicy;
 
 protected:
     std::shared_ptr<Attributes> m_attributes;
     BaseCreature(const BaseCreature& other);
     BaseCreature(BaseCreature&& other) noexcept;
-    BaseCreature& operator=(const BaseCreature& other)     = default;
+    BaseCreature& operator=(const BaseCreature& other);
     BaseCreature& operator=(BaseCreature&& other) noexcept = default;
 
 public:
     BaseCreature(const std::string& name, int maxHp, int strength, int dexterity, int constitution, int intelligence,
                  int wisdom, int charisma);
     BaseCreature();
-    virtual ~BaseCreature();
+    virtual ~BaseCreature() noexcept;
 
     virtual std::unique_ptr<BaseCreature> Clone() const = 0;
 
@@ -91,7 +94,7 @@ public:
     {
         if (hp < 1)
         {
-            m_maxHp = 1;
+            throw InvalidStatException("Максимальное здоровье должно быть >= 1.");
         }
         else
         {
@@ -127,10 +130,12 @@ public:
         m_attributes->SetCharisma(charisma);
     }
 
-    void TakeDamage(int damage);
-    void Heal(int heal);
+    virtual void TakeDamage(int damage);
+    virtual void Heal(int heal);
     int RollInitiative() const;
     int CalculateModifier(const std::string& attribute) const;
     virtual void PrintInfo() const;
     virtual void TakeTurn() = 0;
+    void PrintCategory() const;
+    void SetDamagePolicy(std::unique_ptr<IDamagePolicy> policy);
 };

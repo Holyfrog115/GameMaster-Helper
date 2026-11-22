@@ -1,4 +1,5 @@
 #include "attributes.hpp"
+#include "exceptions.hpp"
 #include "utility.hpp"
 #include <iomanip>
 #include <iostream>
@@ -15,7 +16,7 @@ Attributes::Attributes(int strength, int dexterity, int constitution, int intell
     std::cout << "Объект класса Attributes был создан\n";
 }
 
-Attributes::~Attributes()
+Attributes::~Attributes() noexcept
 {
     std::cout << "Объект класса Attributes был удален\n";
 }
@@ -122,15 +123,10 @@ int Attributes::CalculateCarryingCapacity() const
 
 int Attributes::ValidAttribute(int attribute) const
 {
-    if (attribute < 1)
+    if (attribute < 1 || attribute > 20)
     {
-        std::cout << "Ошибка. Неположительное значение характеристики. Установлено значение 1.\n";
-        return 1;
-    }
-    else if (attribute > 20)
-    {
-        std::cout << "Ошибка. Значение характеристики > 20. Установлено значение 20.\n";
-        return 20;
+        throw InvalidStatException(
+            "Значение характеристики должно быть от 1 до 20 (передано: " + std::to_string(attribute) + ").");
     }
 
     return attribute;

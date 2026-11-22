@@ -1,5 +1,6 @@
 #include "enemycreature.hpp"
 #include "attributes.hpp"
+#include "exceptions.hpp"
 #include <iostream>
 #include <string>
 
@@ -10,8 +11,7 @@ EnemyCreature::EnemyCreature(int str, int dex, int con, int intelligence, int wi
 {
     if (challengeRating < 0)
     {
-        std::cout << "Ошибка. Уровень опасности существа не может быть < 0. Установлено значение 0.\n";
-        m_challengeRating = 0;
+        throw InvalidStatException("Уровень опасности существа не может быть < 0.");
     }
     else
     {
@@ -20,8 +20,7 @@ EnemyCreature::EnemyCreature(int str, int dex, int con, int intelligence, int wi
 
     if (xpReward < 0)
     {
-        std::cout << "Ошибка. Количество опыта за победу над существом не может быть < 0. Установлено значение 0.\n";
-        m_xpReward = 0;
+        throw InvalidStatException("Количество опыта за победу над существом не может быть < 0.");
     }
     else
     {
@@ -36,7 +35,7 @@ EnemyCreature::EnemyCreature()
 {
 }
 
-EnemyCreature::~EnemyCreature()
+EnemyCreature::~EnemyCreature() noexcept
 {
     std::cout << "~EnemyCreature() -> Объект уничтожен.\n";
 }
@@ -76,4 +75,10 @@ void EnemyCreature::TakeTurn()
         // Совершает ход
         std::cout << GetName() << " совершает атаку.\n";
     }
+}
+
+std::string EnemyCreature::GetLootDescription() const
+{
+    return "Награды за победу над " + GetName() + ":\n" + " - " + std::to_string(GetGoldReward()) + " золота\n" +
+           " - " + std::to_string(GetXpReward()) + " опыта\n";
 }

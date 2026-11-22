@@ -13,7 +13,7 @@ private:
 
 public:
     Attributes(int strength, int dexterity, int constitution, int intelligence, int wisdom, int charisma);
-    ~Attributes();
+    ~Attributes() noexcept;
 
     int GetStrength() const;
     int GetDexterity() const;

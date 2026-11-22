@@ -1,4 +1,5 @@
 #include "party.hpp"
+#include "exceptions.hpp"
 #include "playercharacter.hpp"
 #include <algorithm>
 #include <iostream>
@@ -22,7 +23,7 @@ Party::Party(const std::vector<std::shared_ptr<PlayerCharacter>>& characters)
     std::cout << "Объект класса Party был создан.\n";
 }
 
-Party::~Party()
+Party::~Party() noexcept
 {
     std::cout << "Объект класса Party был удален.\n";
 }
@@ -48,16 +49,12 @@ void Party::AddCharacter(const std::vector<std::shared_ptr<PlayerCharacter>>& ch
 
 void Party::RemoveCharacter(size_t index)
 {
-    if (index == 0)
+    if (index == 0 || (index - 1) >= m_members.size())
     {
-        return;
+        throw std::out_of_range("Некорректный номер участника группы.");
     }
     --index;
-
-    if (index < m_members.size())
-    {
-        m_members.erase(m_members.begin() + index);
-    }
+    m_members.erase(m_members.begin() + index);
 }
 
 void Party::RemoveCharacter(const PlayerCharacter* character)
@@ -126,4 +123,44 @@ bool Party::SearchCharacter(const std::string& name) const
     }
 
     return false;
+}
+
+void Party::DistributeReward(const Ilootable& source) const
+{
+    std::cout << source.GetLootDescription();
+
+    if (m_members.empty())
+    {
+        throw GameRuleException("Невозможно распределить награду: в группе нет участников.");
+    }
+
+    int xpPerMember   = source.GetXpReward() / static_cast<int>(m_members.size());
+    int goldPerMember = source.GetGoldReward() / static_cast<int>(m_members.size());
+
+    std::cout << "Каждому участнику: +" << xpPerMember << " опыта, " << goldPerMember << " золота.\n";
+}
+
+void Party::DistributeReward(const std::vector<const Ilootable*>& sources) const
+{
+    if (m_members.empty())
+    {
+        throw GameRuleException("Невозможно распределить награду: в группе нет участников.");
+    }
+
+    int totalXp   = 0;
+    int totalGold = 0;
+    for (const Ilootable* source : sources)
+    {
+        if (source != nullptr)
+        {
+            std::cout << source->GetLootDescription();
+            totalXp += source->GetXpReward();
+            totalGold += source->GetGoldReward();
+        }
+    }
+
+    int xpPerMember   = totalXp / static_cast<int>(m_members.size());
+    int goldPerMember = totalGold / static_cast<int>(m_members.size());
+
+    std::cout << "Каждому участнику: +" << xpPerMember << " опыта, " << goldPerMember << " золота.\n";
 }

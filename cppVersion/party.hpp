@@ -1,4 +1,5 @@
 #pragma once
+#include "ilootable.hpp"
 #include "playercharacter.hpp"
 #include <memory>
 #include <vector>
@@ -12,7 +13,7 @@ public:
     Party();
     Party(std::shared_ptr<PlayerCharacter> character);
     Party(const std::vector<std::shared_ptr<PlayerCharacter>>& characters);
-    ~Party();
+    ~Party() noexcept;
 
     void AddCharacter(std::shared_ptr<PlayerCharacter> character);
     void AddCharacter(const std::vector<std::shared_ptr<PlayerCharacter>>& characters);
@@ -22,4 +23,6 @@ public:
     void PrintParty() const;
     bool SearchCharacter(const std::string& name) const;
     bool SearchCharacterByFullName(const std::string& name) const;
+    void DistributeReward(const Ilootable& source) const;
+    void DistributeReward(const std::vector<const Ilootable*>& sources) const;
 };

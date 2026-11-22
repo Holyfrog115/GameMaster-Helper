@@ -1,5 +1,6 @@
 #include "playercharacter.hpp"
 #include "attributes.hpp"
+#include "exceptions.hpp"
 #include "party.hpp"
 #include "utility.hpp"
 #include <iostream>
@@ -11,15 +12,9 @@ PlayerCharacter::PlayerCharacter(int str, int dex, int con, int intelligence, in
     : BaseCreature{name, maxHp, str, dex, con, intelligence, wis, cha}
     , m_class{characterClass}
 {
-    if (level < 1)
+    if (level < 1 || level > 20)
     {
-        std::cout << "Ошибка. Неположительный уровень персонажа. Установлен 1 уровень.\n";
-        m_level = 1;
-    }
-    else if (level > 20)
-    {
-        std::cout << "Ошибка. Уровень персонажа > 20. Установлен 20 уровень.\n";
-        m_level = 20;
+        throw InvalidStatException("Уровень персонажа должен быть от 1 до 20.");
     }
     else
     {
@@ -64,7 +59,7 @@ PlayerCharacter& PlayerCharacter::operator=(const PlayerCharacter& other)
     return *this;
 }
 
-PlayerCharacter::~PlayerCharacter()
+PlayerCharacter::~PlayerCharacter() noexcept
 {
     std::cout << "~PlayerCharacter() -> Объект уничтожен (" << GetName() << ")\n";
 }
@@ -83,7 +78,7 @@ void PlayerCharacter::LevelUp()
     }
     else
     {
-        std::cout << "Невозможно повысить уровень. Достигнут максимальный уровень (20).\n";
+        throw GameRuleException("Достигнут максимальный уровень персонажа (20).");
     }
 }
 
@@ -114,19 +109,25 @@ void PlayerCharacter::TakeTurn()
     }
     if (GetCurrentHp() == 0)
     {
-        if (RollD20() >= 10)
+        if (m_successfulSavingThrows < 3 && m_failedSavingThrows < 3)
         {
-            m_successfulSavingThrows++;
-            std::cout << "Успешный спасбросок. (" << m_successfulSavingThrows << " из 3)\n";
+            if (RollD20() >= 10)
+            {
+                m_successfulSavingThrows++;
+                std::cout << "Успешный спасбросок. (" << m_successfulSavingThrows << " из 3)\n";
+            }
+            else
+            {
+                m_failedSavingThrows++;
+                std::cout << "Провальный спасбросок. (" << m_failedSavingThrows << " из 3)\n";
+            }
         }
-        else
-        {
-            m_failedSavingThrows++;
-            std::cout << "Провальный спасбросок. (" << m_failedSavingThrows << " из 3)\n";
-        }
+
         if (m_successfulSavingThrows == 3)
         {
             std::cout << GetName() << " стабилизировался и восстанавливает 1 HP\n";
+            m_successfulSavingThrows = 0;
+            m_failedSavingThrows     = 0;
             SetCurrentHp(1);
             return;
         }
@@ -144,5 +145,46 @@ void PlayerCharacter::TakeTurn()
         m_failedSavingThrows     = 0;
         // Совершает ход
         std::cout << "Персонаж игрока " << GetName() << " совершает атаку.\n";
+    }
+}
+
+void PlayerCharacter::PrintCategory() const
+{
+    std::cout << "Категория: Персонаж игрока (" << m_class << ")\n";
+}
+
+void PlayerCharacter::Heal(int heal)
+{
+    if (m_isDead)
+    {
+        throw DeadCreatureException(GetName());
+    }
+    BaseCreature::Heal(heal);
+}
+
+void PlayerCharacter::TakeDamage(int damage)
+{
+    if (m_isDead)
+    {
+        throw DeadCreatureException(GetName());
+    }
+    if (GetCurrentHp() == 0)
+    {
+        if (damage < 0)
+        {
+            throw InvalidStatException("Значение урона не может быть отрицательным.");
+        }
+        ++m_failedSavingThrows;
+        std::cout << GetName() << " получает урон и увеличивает количество провальных спасбросков ("
+                  << m_failedSavingThrows << "/3)\n";
+        if (m_failedSavingThrows == 3)
+        {
+            m_isDead = true;
+            std::cout << GetName() << " погиб.\n";
+        }
+    }
+    else
+    {
+        BaseCreature::TakeDamage(damage);
     }
 }

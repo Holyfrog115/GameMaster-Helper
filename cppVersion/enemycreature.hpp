@@ -1,9 +1,11 @@
 #pragma once
 #include "basecreature.hpp"
+#include "exceptions.hpp"
+#include "ilootable.hpp"
 #include <iostream>
 #include <string>
 
-class EnemyCreature : public BaseCreature
+class EnemyCreature : public BaseCreature, public Ilootable
 {
 private:
     double m_challengeRating;
@@ -18,18 +20,13 @@ public:
     EnemyCreature(EnemyCreature&& other) noexcept            = default;
     EnemyCreature& operator=(const EnemyCreature& other)     = default;
     EnemyCreature& operator=(EnemyCreature&& other) noexcept = default;
-    ~EnemyCreature() override;
+    ~EnemyCreature() noexcept override;
 
     std::unique_ptr<BaseCreature> Clone() const override;
 
     double GetChallengeRating() const
     {
         return m_challengeRating;
-    }
-
-    int GetXpReward() const
-    {
-        return m_xpReward;
     }
 
     std::string GetType() const
@@ -41,8 +38,7 @@ public:
     {
         if (challengeRating < 0)
         {
-            std::cout << "Ошибка. Уровень опасности существа не может быть < 0\n";
-            return;
+            throw InvalidStatException("Уровень опасности существа не может быть < 0.");
         }
         m_challengeRating = challengeRating;
     }
@@ -51,8 +47,7 @@ public:
     {
         if (xpReward < 0)
         {
-            std::cout << "Ошибка. Количество опыта за победу над существом не может быть < 0\n";
-            return;
+            throw InvalidStatException("Количество опыта за победу над существом не может быть < 0.");
         }
         m_xpReward = xpReward;
     }
@@ -61,6 +56,18 @@ public:
     {
         m_type = type;
     }
+
+    int GetXpReward() const override
+    {
+        return m_xpReward;
+    }
+
+    int GetGoldReward() const override
+    {
+        return static_cast<int>(m_challengeRating * 20);
+    }
+
+    std::string GetLootDescription() const override;
 
     void PrintInfo() const override;
     void TakeTurn() override;

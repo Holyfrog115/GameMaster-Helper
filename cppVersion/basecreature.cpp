@@ -1,4 +1,6 @@
 #include "basecreature.hpp"
+#include "exceptions.hpp"
+#include "normaldp.hpp"
 #include "utility.hpp"
 #include <iostream>
 #include <memory>
@@ -7,11 +9,11 @@ BaseCreature::BaseCreature(const std::string& name, int maxHp, int strength, int
                            int intelligence, int wisdom, int charisma)
     : m_name{name}
     , m_attributes{std::make_shared<Attributes>(strength, dexterity, constitution, intelligence, wisdom, charisma)}
+    , m_damagePolicy{std::make_unique<NormalDamagePolicy>()}
 {
     if (maxHp < 1)
     {
-        std::cout << "Ошибка. Неположительное значение максимального здоровья. Установлено значение - 1\n";
-        m_maxHp = 1;
+        throw InvalidStatException("Максимальное здоровье должно быть >= 1.");
     }
     else
     {
@@ -32,6 +34,7 @@ BaseCreature::BaseCreature(const BaseCreature& other)
     : m_name{other.GetName()}
     , m_currentHp{other.GetCurrentHp()}
     , m_maxHp{other.GetMaxHp()}
+    , m_damagePolicy{other.m_damagePolicy ? other.m_damagePolicy->Clone() : std::make_unique<NormalDamagePolicy>()}
     , m_attributes{other.m_attributes}
 {
     ++s_creatureCount;
@@ -42,13 +45,30 @@ BaseCreature::BaseCreature(BaseCreature&& other) noexcept
     : m_name{std::move(other.m_name)}
     , m_maxHp{other.m_maxHp}
     , m_currentHp{other.m_currentHp}
+    , m_damagePolicy{std::move(other.m_damagePolicy)}
     , m_attributes{std::move(other.m_attributes)}
 {
     ++s_creatureCount;
     std::cout << "BaseCreature(BaseCreature&& other) -> объект перемещен\n";
 }
 
-BaseCreature::~BaseCreature()
+BaseCreature& BaseCreature::operator=(const BaseCreature& other)
+{
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    m_name         = other.m_name;
+    m_currentHp    = other.m_currentHp;
+    m_maxHp        = other.m_maxHp;
+    m_damagePolicy = other.m_damagePolicy ? other.m_damagePolicy->Clone() : std::make_unique<NormalDamagePolicy>();
+    m_attributes   = other.m_attributes;
+
+    return *this;
+}
+
+BaseCreature::~BaseCreature() noexcept
 {
     --s_creatureCount;
     std::cout << "~BaseCreature() -> Объект уничтожен\n";
@@ -58,16 +78,27 @@ void BaseCreature::TakeDamage(int damage)
 {
     if (damage < 0)
     {
-        std::cout << "Ошибка. Значение урона должно быть положительным.\n";
-        return;
+        throw InvalidStatException("Значение урона не может быть отрицательным.");
     }
-    if (m_currentHp - damage < 0)
+
+    int actualDamage = m_damagePolicy->ModifyDamage(damage);
+    std::cout << m_name << " получает " << actualDamage << " урона (базовый: " << damage
+              << ", правило: " << m_damagePolicy->GetPolicyName() << ")\n";
+    if (m_currentHp - actualDamage < 0)
     {
         m_currentHp = 0;
     }
     else
     {
-        m_currentHp -= damage;
+        m_currentHp -= actualDamage;
+    }
+}
+
+void BaseCreature::SetDamagePolicy(std::unique_ptr<IDamagePolicy> policy)
+{
+    if (policy != nullptr)
+    {
+        m_damagePolicy = std::move(policy);
     }
 }
 
@@ -75,8 +106,7 @@ void BaseCreature::Heal(int heal)
 {
     if (heal < 0)
     {
-        std::cout << "Ошибка. Значение исцеления должно быть положительным.\n";
-        return;
+        throw InvalidStatException("Значение исцеления не может быть отрицательным.");
     }
     if (m_currentHp + heal > m_maxHp)
     {
@@ -108,4 +138,9 @@ void BaseCreature::PrintInfo() const
     std::cout << " - Имя персонажа: " << name << "\n";
     std::cout << " - Максимальное здоровье: " << GetMaxHp() << "\n";
     std::cout << " - Текущее здоровье: " << GetCurrentHp() << "\n";
+}
+
+void BaseCreature::PrintCategory() const
+{
+    std::cout << "Категория: Базовое существо\n";
 }

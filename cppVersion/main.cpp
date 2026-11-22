@@ -1,7 +1,13 @@
 #include "attributes.hpp"
 #include "enemycreature.hpp"
+#include "exceptions.hpp"
+#include "idamagepolicy.hpp"
+#include "ilootable.hpp"
 #include "party.hpp"
 #include "playercharacter.hpp"
+#include "resistancedp.hpp"
+#include "treasurechest.hpp"
+#include "vulnerabilitydp.hpp"
 #include <iostream>
 #include <memory>
 #if defined(_WIN32) || defined(_WIN64)
@@ -54,19 +60,6 @@ int main()
     }
     std::cout << "После удаления объекта Party персонажи все еще доступны. Имя объекта char1: " << character1->GetName()
               << "\n";
-
-    // Примеры работы проверок правил
-    std::cout << "\n--- ПРИМЕРЫ РАБОТЫ ПРОВЕРОК ПРАВИЛ ---\n";
-    std::cout << "Установление отрицательного значения характеристики:\n";
-    character1->SetCharisma(-1);
-    std::cout << "Установление значения характеристики > 20:\n";
-    character1->SetCharisma(30);
-    std::cout << "Попытка повысить уровень выше 20:\n";
-    character1->SetLevel(18);
-    for (int i = 0; i < 3; ++i)
-    {
-        character1->LevelUp();
-    }
 
     // Статическая инициализация объекта
     std::cout << "\n--- СТАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ОБЪЕКТА ---\n";
@@ -197,6 +190,138 @@ int main()
 
         member->LeaveParty(party);
         party.PrintParty();
+    }
+
+    // Демонстрационная программа, полиморфизм, интерфейс и исключения
+    std::cout << "\n--- ДЕМОНСТРАЦИОННАЯ ПРОГРАММА ЛР 5 ---\n";
+    EnemyCreature goblin(10, 14, 10, 8, 8, 6, "Гоблин", 7, 0.25, 50, "Гуманоид");
+    TreasureChest chest("Древний сундук", 120, 20);
+    Party party({character1, character2, character3});
+
+    std::cout << "\nРабота интерфейса Ilootable:\n";
+    std::vector<const Ilootable*> lootSources = {&goblin, &chest};
+    for (const Ilootable* source : lootSources)
+    {
+        party.DistributeReward(*source);
+        std::cout << "\n";
+    }
+
+    // Раннее и позднее связывание
+    std::cout << "Раннее и позднее связывание:\n";
+    std::unique_ptr<BaseCreature> hero =
+        std::make_unique<PlayerCharacter>(12, 14, 13, 10, 11, 16, "Богдан Милорад Тихоншвили", 3, 24, "Колдун");
+
+    std::cout << "\nВызов через указатель на BaseCreature невиртуального метода:\n";
+    hero->PrintCategory();
+    std::cout << "Вызов через указатель на BaseCreature виртуального метода:\n";
+    hero->TakeTurn();
+    std::cout << "\n";
+
+    // Проверка типа во время выполнения
+    std::vector<std::unique_ptr<BaseCreature>> battlefield;
+    battlefield.push_back(
+        std::make_unique<PlayerCharacter>(12, 14, 13, 10, 11, 16, "Богдан Милорад Тихоншвили", 3, 24, "Колдун"));
+    battlefield.push_back(std::make_unique<EnemyCreature>(10, 14, 10, 8, 8, 6, "Гоблин", 7, 0.25, 50, "Гуманоид"));
+    battlefield.push_back(std::make_unique<EnemyCreature>(16, 12, 16, 7, 11, 10, "Орк", 15, 0.5, 100, "Гуманоид"));
+
+    std::cout << "\nПроверка типа во время выполнения:\n";
+    for (const std::unique_ptr<BaseCreature>& creature : battlefield)
+    {
+        if (auto* lootable = dynamic_cast<Ilootable*>(creature.get()))
+        {
+            party.DistributeReward(*lootable);
+        }
+        else
+        {
+            std::cout << creature->GetName() << " не реализует ILootable. Добычи нет.\n";
+        }
+    }
+
+    // Конфигурирование
+    std::cout << "\nКонфигурирование:\n";
+    PlayerCharacter barbarian(16, 12, 16, 8, 10, 10, "Грог", 5, 60, "Варвар");
+
+    barbarian.TakeDamage(15);
+    std::cout << "Текущее HP: " << barbarian.GetCurrentHp() << "\n";
+
+    // Динамическая смена поведения
+    barbarian.SetDamagePolicy(std::make_unique<ResistanceDamagePolicy>());
+    barbarian.TakeDamage(15);
+    std::cout << "Текущее HP: " << barbarian.GetCurrentHp() << "\n";
+
+    // Динамическая смена поведения
+    barbarian.SetDamagePolicy(std::make_unique<VulnerabilityDamagePolicy>());
+    barbarian.TakeDamage(15);
+    std::cout << "Текущее HP: " << barbarian.GetCurrentHp() << "\n";
+
+    // Исключения
+    std::cout << "\nИсключения:\n";
+
+    PlayerCharacter testHero(14, 12, 14, 10, 10, 12, "Грог", 19, 45, "Воин");
+
+    // 1. Успешное действие
+    try
+    {
+        testHero.LevelUp();
+        testHero.TakeDamage(10);
+        testHero.Heal(5);
+        std::cout << "Успешно: уровень " << testHero.GetLevel() << ", HP " << testHero.GetCurrentHp() << "\n";
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "Неожиданная ошибка: " << e.what() << "\n";
+    }
+
+    // Перехват нарушений правил
+    std::cout << "\nПовышение уровня выше 20:\n";
+    try
+    {
+        testHero.LevelUp();
+    }
+    catch (const GameRuleException& e)
+    {
+        std::cout << "GameRuleException: " << e.what() << "\n";
+    }
+
+    std::cout << "\nУстановка показателя силы = 25:\n";
+    try
+    {
+        testHero.SetStrength(25);
+    }
+    catch (const InvalidStatException& e)
+    {
+        std::cout << "InvalidStatException: " << e.what() << "\n";
+    }
+
+    std::cout << "\nОтрицательный урон:\n";
+    try
+    {
+        testHero.TakeDamage(-1);
+    }
+    catch (const InvalidStatException& e)
+    {
+        std::cout << "InvalidStatException: " << e.what() << "\n";
+    }
+
+    std::cout << "\n";
+
+    while (!testHero.IsDead())
+    {
+        testHero.TakeDamage(1000);
+        testHero.TakeDamage(1000);
+        testHero.TakeDamage(1000);
+        testHero.TakeDamage(1000);
+        testHero.TakeTurn();
+    }
+
+    std::cout << "\nПопытка исцелить мертвого персонажа:\n";
+    try
+    {
+        testHero.Heal(1);
+    }
+    catch (const DeadCreatureException& e)
+    {
+        std::cout << "DeadCreatureException: " << e.what() << "\n";
     }
 
     std::cout << "\n";
