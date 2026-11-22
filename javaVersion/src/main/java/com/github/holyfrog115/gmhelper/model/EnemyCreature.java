@@ -1,6 +1,6 @@
 package com.github.holyfrog115.gmhelper.model;
 
-public class EnemyCreature extends BaseCreature {
+public class EnemyCreature extends BaseCreature implements Lootable {
     private double challengeRating;
     private int xpReward;
     private String type;
@@ -45,10 +45,6 @@ public class EnemyCreature extends BaseCreature {
 
     public double getChallengeRating() {
         return challengeRating;
-    }
-
-    public int getXpReward() {
-        return xpReward;
     }
 
     public String getType() {
@@ -110,5 +106,24 @@ public class EnemyCreature extends BaseCreature {
             // Совершает ход
             System.out.println(getName() + " совершает атаку.");
         }
+    }
+
+    @Override
+    public int getXpReward() {
+        return xpReward;
+    }
+
+    @Override
+    public int getGoldReward() {
+        return (int) challengeRating * 20;
+    }
+
+    @Override
+    public String getLootDescription() {
+        return """
+                 Награды за победу над %s:
+                 - %d золота
+                 - %d опыта
+                """.formatted(getName(), getGoldReward(), getXpReward());
     }
 }
