@@ -17,11 +17,9 @@ public abstract class BaseCreature {
         this.attributes = new Attributes(strength, dexterity, constitution, intelligence, wisdom, charisma);
 
         if (maxHp < 1) {
-            System.out.println("Ошибка. Неположительное значение максимального здоровья. Установлено значение - 1");
-            this.maxHp = 1;
-        } else {
-            this.maxHp = maxHp;
+            throw new InvalidStatException("Максимальное здоровье должно быть >= 1.");
         }
+        this.maxHp = maxHp;
         this.currentHp = this.maxHp;
         creatureCount++;
 
@@ -104,10 +102,9 @@ public abstract class BaseCreature {
 
     public void setMaxHp(int hp) {
         if (hp < 1) {
-            this.maxHp = 1;
-        } else {
-            this.maxHp = hp;
+            throw new InvalidStatException("Максимальное здоровье должно быть >= 1.");
         }
+        this.maxHp = hp;
         if (this.currentHp > this.maxHp) {
             this.currentHp = this.maxHp;
         }
@@ -154,8 +151,7 @@ public abstract class BaseCreature {
 
     public void heal(int heal) {
         if (heal < 0) {
-            System.out.println("Ошибка. Значение исцеления должно быть положительным.");
-            return;
+            throw new InvalidStatException("Значение исцеления не может быть отрицательным.");
         }
         if (currentHp + heal > maxHp) {
             currentHp = maxHp;

@@ -1,5 +1,7 @@
 package com.github.holyfrog115.gmhelper.model;
 
+import com.github.holyfrog115.gmhelper.exception.InvalidStatException;
+
 public class Attributes implements AutoCloseable {
     private int strength;
     private int dexterity;
@@ -103,13 +105,8 @@ public class Attributes implements AutoCloseable {
     }
 
     private int validAttribute(int attribute) {
-        if (attribute < 1) {
-            System.out.println("Ошибка. Неположительное значение характеристики. Установлено значение 1.");
-            return 1;
-        }
-        else if (attribute > 20) {
-            System.out.println("Ошибка. Значение характеристики > 20. Установлено значение 20.");
-            return 20;
+        if (attribute < 1 || attribute > 20) {
+            throw new InvalidStatException("Значение характеристики должно быть от 1 до 20 (передано: \" + attribute + \").");
         }
         return attribute;
     }

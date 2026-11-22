@@ -1,5 +1,6 @@
 package com.github.holyfrog115.gmhelper.model;
 import com.github.holyfrog115.gmhelper.exception.DeadCreatureException;
+import com.github.holyfrog115.gmhelper.exception.GameRuleException;
 import com.github.holyfrog115.gmhelper.exception.InvalidStatException;
 import com.github.holyfrog115.gmhelper.utils.DiceUtils;
 import java.util.Objects;
@@ -16,15 +17,10 @@ public final class PlayerCharacter extends BaseCreature implements AutoCloseable
         super(name, maxHp, str, dex, con, intel, wis, cha);
         this.characterClass = characterClass;
 
-        if (level < 1) {
-            System.out.println("Ошибка. Неположительный уровень персонажа. Установлен 1 уровень.");
-            this.level = 1;
-        } else if (level > 20) {
-            System.out.println("Ошибка. Уровень персонажа > 20. Установлен 20 уровень.");
-            this.level = 20;
-        } else {
-            this.level = level;
+        if (level < 1 || level > 20) {
+            throw new InvalidStatException("Уровень персонажа должен быть от 1 до 20.");
         }
+        this.level = level;
 
         System.out.println("PlayerCharacter() -> Объект создан (" + getName() + ")");
     }
@@ -71,13 +67,10 @@ public final class PlayerCharacter extends BaseCreature implements AutoCloseable
     // Set методы
 
     public void setLevel(int level) {
-        if (level < 1) {
-            System.out.println("Ошибка. Неположительный уровень персонажа.");
-        } else if (level > 20) {
-            System.out.println("Ошибка. Уровень персонажа > 20.");
-        } else {
-            this.level = level;
+        if (level < 1 || level > 20) {
+            throw new InvalidStatException("Уровень персонажа должен быть от 1 до 20.");
         }
+        this.level = level;
     }
 
     public void setCharacterClass(String characterClass) {
@@ -91,7 +84,7 @@ public final class PlayerCharacter extends BaseCreature implements AutoCloseable
             level++;
             System.out.println("Уровень повышен. Текущий уровень: " + level);
         } else {
-            System.out.println("Невозможно повысить уровень. Достигнут максимальный уровень (20).");
+            throw new GameRuleException("Достигнут максимальный уровень персонажа (20).");
         }
     }
 

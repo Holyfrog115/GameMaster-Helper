@@ -38,14 +38,10 @@ public class Party {
     }
 
     public void removeCharacter(int index) {
-        if (index <= 0) {
-            return;
+        if (index <= 0 || (index - 1) >= members.size()) {
+            throw new IndexOutOfBoundsException("Некорректный номер участника группы.");
         }
-        index--;
-
-        if (index < members.size()) {
-            members.remove(index);
-        }
+        members.remove(index - 1);
     }
 
     public void removeCharacter(PlayerCharacter character) {

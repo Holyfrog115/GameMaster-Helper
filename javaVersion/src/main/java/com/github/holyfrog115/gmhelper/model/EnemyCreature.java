@@ -13,18 +13,14 @@ public class EnemyCreature extends BaseCreature implements Lootable {
         this.type = type;
 
         if (challengeRating < 0) {
-            System.out.println("Ошибка. Уровень опасности существа не может быть < 0. Установлено значение 0.");
-            this.challengeRating = 0;
-        } else {
-            this.challengeRating = challengeRating;
+            throw new InvalidStatException("Уровень опасности существа не может быть < 0.");
         }
+        this.challengeRating = challengeRating;
 
         if (xpReward < 0) {
-            System.out.println("Ошибка. Количество опыта за победу над существом не может быть < 0. Установлено значение 0.");
-            this.xpReward = 0;
-        } else {
-            this.xpReward = xpReward;
+            throw new InvalidStatException("Количество опыта за победу над существом не может быть < 0.");
         }
+        this.xpReward = xpReward;
 
         System.out.println("EnemyCreature() -> Объект создан");
     }
