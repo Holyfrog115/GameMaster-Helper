@@ -1,5 +1,7 @@
 package com.github.holyfrog115.gmhelper.model;
 
+import com.github.holyfrog115.gmhelper.exception.InvalidStatException;
+
 public class EnemyCreature extends BaseCreature implements Lootable {
     private double challengeRating;
     private int xpReward;
@@ -53,16 +55,14 @@ public class EnemyCreature extends BaseCreature implements Lootable {
 
     public void setChallengeRating(double challengeRating) {
         if (challengeRating < 0) {
-            System.out.println("Ошибка. Уровень опасности существа не может быть < 0");
-            return;
+            throw new InvalidStatException("Уровень опасности существа не может быть < 0.");
         }
         this.challengeRating = challengeRating;
     }
 
     public void setXpReward(int xpReward) {
         if (xpReward < 0) {
-            System.out.println("Ошибка. Количество опыта за победу над существом не может быть < 0");
-            return;
+            throw new InvalidStatException("Количество опыта за победу над существом не может быть < 0.");
         }
         this.xpReward = xpReward;
     }
